@@ -93,7 +93,7 @@ android {
 }
 
 dependencies {
-    compileOnly libs.glance.appwidgets
+    compileOnly libs.glance.appwidget
 
     implementation libs.androidx.core
     implementation libs.androidx.activity.compose

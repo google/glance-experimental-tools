@@ -47,9 +47,9 @@ android {
 }
 
 dependencies {
-    debugImplementation project(':preview')
+    debugImplementation project(':preview-appwidget')
     implementation libs.androidx.core
     implementation libs.androidx.core.remoteviews
-    implementation libs.glance.appwidgets
+    implementation libs.glance.appwidget
     implementation libs.google.material
 }

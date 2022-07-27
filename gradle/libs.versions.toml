@@ -32,7 +32,7 @@ compose-animation-animation = { module = "androidx.compose.animation:animation",
 
 compose-material-material3 = "androidx.compose.material3:material3:1.0.0-alpha14"
 
-glance-appwidgets = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 
 google-material = "com.google.android.material:material:1.7.0-alpha03"
 
