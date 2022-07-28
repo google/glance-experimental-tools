@@ -8,8 +8,13 @@ experiment with new APIs and to gather insight into the development experience o
 
 ## Libraries
 
-### 🍫 [Preview-appwidget](./preview-appwidget)
+### 🖼️ [Preview-appwidget](./preview-appwidget)
+
 A tool to display AppWidget previews embedded inside the app for faster iterations. 
+
+### 🛠️ Configuration-appwidget
+
+🚧 Work in-progress
 
 ## Future?
 
