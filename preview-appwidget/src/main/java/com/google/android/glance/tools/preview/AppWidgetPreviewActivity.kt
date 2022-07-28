@@ -31,9 +31,13 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
-import androidx.glance.appwidget.*
-import com.google.android.glance.tools.preview.internal.getSingleSize
+import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.GlanceRemoteViews
+import androidx.glance.appwidget.SizeMode
 import com.google.android.glance.tools.preview.internal.AppWidgetPreviewManager
+import com.google.android.glance.tools.preview.internal.getSingleSize
 import com.google.android.glance.tools.preview.internal.getTargetSize
 import com.google.android.glance.tools.preview.internal.toPixels
 import com.google.android.glance.tools.preview.internal.toSizeF
