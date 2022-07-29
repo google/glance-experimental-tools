@@ -1,6 +1,6 @@
 # Previews for Glance-appwidget
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.google.android.glance.tools/preview-appwidget)](https://search.maven.org/search?q=g:com.google.android.glance.tools)
+[![Maven Central](https://img.shields.io/maven-central/v/com.google.android.glance.tools/appwidget-preview)](https://search.maven.org/search?q=g:com.google.android.glance.tools)
 
 Previews for Glance-appwidget allows developers to speed up UI iterations and UI testing by
 providing
@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    debugImplementation "com.google.android.glance.tools:preview-appwidget:<version>"
+    debugImplementation "com.google.android.glance.tools:appwidget-preview:<version>"
 }
 ```
 
@@ -101,8 +101,8 @@ widget (e.g setting a fake GlanceState)
 
 #### Resizing the widget and respecting SizeMode.
 
-Use the resize panel to adjust sizing attributes and ensure the UI fits in all modes/sizes. 
-The example below shows a widget that displays the size value for each of the Glance SizeModes 
+Use the resize panel to adjust sizing attributes and ensure the UI fits in all modes/sizes.
+The example below shows a widget that displays the size value for each of the Glance SizeModes
 
 <table>
   <tr>
@@ -154,4 +154,4 @@ The design works with the following limitations:
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
 These are updated on every commit.
 
-[snap]: https://oss.sonatype.org/content/repositories/snapshots/com/google/android/glance/tools/preview-appwidget/
+[snap]: https://oss.sonatype.org/content/repositories/snapshots/com/google/android/glance/tools/appwidget-preview/

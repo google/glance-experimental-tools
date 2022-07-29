@@ -8,13 +8,17 @@ experiment with new APIs and to gather insight into the development experience o
 
 ## Libraries
 
-### 🖼️ [Preview-appwidget](./preview-appwidget)
+### 🧬️ [appwidget-host](./appwidget-host)
 
-A tool to display AppWidget previews embedded inside the app for faster iterations. 
+A simple composable to display RemoteViews inside your app.
 
-### 🛠️ Configuration-appwidget
+### 🖼️ [appwidget-preview](./appwidget-preview)
 
-🚧 Work in-progress
+A debug tool to display AppWidget previews embedded inside the app and enable "Live Edits".
+
+### 🛠️ [appwidget-configuration](./appwidget-configuration)
+
+A Material3 Scaffold implementation for appwidget configuration activities.
 
 ## Future?
 
