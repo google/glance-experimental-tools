@@ -31,7 +31,6 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
-import com.google.android.glance.tools.preview.internal.ui.theme.widgetCornerRadiiPx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -60,7 +59,10 @@ internal class AppWidgetPreviewManager(
         }
     }
 
-    suspend fun exportPreview(hostView: AppWidgetHostView): Result<Uri> {
+    suspend fun exportPreview(
+        info: AppWidgetProviderInfo,
+        hostView: AppWidgetHostView
+    ): Result<Uri> {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             return Result.failure(
                 UnsupportedOperationException("Export only support from Android 10")
@@ -74,7 +76,7 @@ internal class AppWidgetPreviewManager(
                 )
                 val dirDest = File(Environment.DIRECTORY_PICTURES, PREVIEWS_FOLDER)
                 val date = System.currentTimeMillis()
-                val name = hostView.appWidgetInfo.loadLabel(hostView.context.packageManager)
+                val name = info.loadLabel(hostView.context.packageManager)
                 val newImage = ContentValues().apply {
                     put(MediaStore.Images.Media.DISPLAY_NAME, "$name-$date.png")
                     put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
@@ -106,7 +108,13 @@ internal class AppWidgetPreviewManager(
         view.layout(view.left, view.top, view.right, view.bottom)
         val clipPath = Path()
         val rect = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
-        val radi = context.widgetCornerRadiiPx.toFloat()
+        val radi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            context.resources.getDimensionPixelSize(
+                android.R.dimen.system_app_widget_background_radius
+            ).toFloat()
+        } else {
+            (16 * context.resources.displayMetrics.density)
+        }
         clipPath.addRoundRect(rect, radi, radi, Path.Direction.CW)
         canvas.clipPath(clipPath)
         view.draw(canvas)

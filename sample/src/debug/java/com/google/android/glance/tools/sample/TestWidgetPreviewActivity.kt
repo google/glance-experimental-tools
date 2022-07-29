@@ -28,7 +28,7 @@ import com.google.android.glance.tools.preview.GlancePreviewActivity
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
 class TestWidgetPreviewActivity : GlancePreviewActivity() {
 
-    private var counter = 0
+    private var counter = 0L
 
     /**
      * To support non-glance widgets we can override this method and provide the RemoteViews directly

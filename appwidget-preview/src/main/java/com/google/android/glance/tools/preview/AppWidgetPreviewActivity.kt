@@ -79,7 +79,7 @@ abstract class AppWidgetPreviewActivity : ComponentActivity() {
                         selectedProvider = selectedProvider.value,
                         currentSize = currentSize.value,
                         preview = ::getAppWidgetPreview,
-                        exportPreview = { previewManager.exportPreview(it) },
+                        exportPreview = { previewManager.exportPreview(selectedProvider.value, it) },
                         onResize = { currentSize.value = it },
                         onSelected = { selectedProvider.value = it }
                     )

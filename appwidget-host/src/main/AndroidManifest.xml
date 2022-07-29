@@ -15,12 +15,6 @@
   ~ limitations under the License.
   -->
 
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialLayout="@layout/widget_loading"
-    android:minWidth="120dp"
-    android:minHeight="100dp"
-    android:previewImage="@drawable/glance_widget_preview"
-    android:resizeMode="horizontal|vertical"
-    android:configure="com.google.android.glance.tools.sample.TestConfigurationActivity"
-    android:widgetFeatures="reconfigurable"
-    android:widgetCategory="home_screen" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+</manifest>

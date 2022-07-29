@@ -25,12 +25,12 @@ kotlin {
 }
 
 android {
-    namespace 'com.google.android.glance.tools.preview'
-    compileSdk 32
+    namespace 'com.google.android.glance.appwidget.host'
+    compileSdk 33
 
     defaultConfig {
         minSdk 21
-        targetSdk 32
+        targetSdk 33
 
         consumerProguardFiles "consumer-rules.pro"
 
@@ -93,7 +93,7 @@ android {
 }
 
 dependencies {
-    compileOnly libs.glance.appwidget
+    implementation libs.glance.appwidget
 
     implementation libs.androidx.core
     implementation libs.androidx.activity.compose

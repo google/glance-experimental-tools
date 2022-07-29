@@ -65,6 +65,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.google.android.glance.appwidget.host.AppWidgetPreviewHost
+import com.google.android.glance.appwidget.host.AppWidgetPreviewHostState
+import com.google.android.glance.appwidget.host.rememberAppWidgetPreviewHost
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -85,15 +88,28 @@ internal fun PreviewScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var previewPanelState by remember { mutableStateOf(PreviewPanel.Resize) }
-    val previewHostState = rememberWidgetHost(selectedProvider)
+    val previewHostState = rememberAppWidgetPreviewHost(selectedProvider)
 
     if (previewHostState.isReady) {
-        LaunchedEffect(previewHostState.value, currentSize) {
-            // If the user is in resizing mode debounce the updates by delaying them.
-            if (previewPanelState == PreviewPanel.Resize && bottomSheetState.isVisible) {
+        LaunchedEffect(previewHostState.value) {
+            // Show first the initial layout
+            previewHostState.updatePreview(
+                RemoteViews(context.packageName, selectedProvider.initialLayout)
+            )
+
+            // Then request the actual preview
+            previewHostState.updatePreview(
+                preview(selectedProvider, currentSize)
+            )
+        }
+        if (previewPanelState == PreviewPanel.Resize && bottomSheetState.isVisible) {
+            LaunchedEffect(currentSize) {
+                // If the user is in resizing mode debounce the updates by delaying them.
                 delay(500)
+                previewHostState.updatePreview(
+                    preview(selectedProvider, currentSize)
+                )
             }
-            previewHostState.updatePreview(preview(selectedProvider, currentSize))
         }
     }
 
@@ -131,7 +147,7 @@ internal fun PreviewScreen(
                 bottomBar = {
                     PreviewBottomBar(
                         drawerState = drawerState,
-                        previewHostState = previewHostState,
+                        appWidgetPreviewHostState = previewHostState,
                         onUpdate = {
                             scope.launch {
                                 previewHostState.updatePreview(
@@ -156,14 +172,14 @@ internal fun PreviewScreen(
                     )
                 },
             ) { innerPadding ->
-                PreviewHost(
-                    appWidgetInfo = selectedProvider,
-                    widgetSize = currentSize,
-                    previewState = previewHostState,
+                AppWidgetPreviewHost(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(24.dp)
+                        .padding(24.dp),
+                    widgetSize = currentSize,
+                    previewState = previewHostState,
+                    showGrid = true
                 )
             }
         }
@@ -173,10 +189,10 @@ internal fun PreviewScreen(
 private suspend fun doExport(
     context: Context,
     snackbarHostState: SnackbarHostState,
-    previewHostState: PreviewHostState,
+    appWidgetPreviewHostState: AppWidgetPreviewHostState,
     exportPreview: suspend (AppWidgetHostView) -> Result<Uri>
 ) {
-    val host = previewHostState.value ?: return
+    val host = appWidgetPreviewHostState.value ?: return
     val uriResult = exportPreview(host)
     if (uriResult.isFailure) {
         snackbarHostState.showSnackbar(
@@ -202,7 +218,7 @@ private suspend fun doExport(
 @Composable
 private fun PreviewBottomBar(
     drawerState: DrawerState,
-    previewHostState: PreviewHostState,
+    appWidgetPreviewHostState: AppWidgetPreviewHostState,
     onUpdate: () -> Unit,
     onShowPanel: (PreviewPanel) -> Unit,
     onExport: () -> Unit
@@ -225,7 +241,7 @@ private fun PreviewBottomBar(
                 )
             }
             IconButton(
-                enabled = previewHostState.isReady,
+                enabled = appWidgetPreviewHostState.isReady,
                 onClick = {
                     onShowPanel(PreviewPanel.Resize)
                 }) {
@@ -235,7 +251,7 @@ private fun PreviewBottomBar(
                 )
             }
             IconButton(
-                enabled = previewHostState.isReady,
+                enabled = appWidgetPreviewHostState.isReady,
                 onClick = {
                     onShowPanel(PreviewPanel.Info)
                 }) {
@@ -245,7 +261,7 @@ private fun PreviewBottomBar(
                 )
             }
             IconButton(
-                enabled = previewHostState.isReady,
+                enabled = appWidgetPreviewHostState.isReady,
                 onClick = {
                     onUpdate()
                 }) {

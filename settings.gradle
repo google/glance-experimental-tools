@@ -26,9 +26,10 @@ gradleEnterprise {
 }
 
 include ':sample'
-include ':preview-appwidget'
+include ':appwidget-host'
+include ':appwidget-preview'
+include ':appwidget-configuration'
 
 // Enable Gradle's version catalog support
 // https://docs.gradle.org/current/userguide/platforms.html
 enableFeaturePreview("VERSION_CATALOGS")
-

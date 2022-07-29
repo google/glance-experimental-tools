@@ -19,7 +19,7 @@ package com.google.android.glance.tools.sample
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalSize
 import androidx.glance.appwidget.GlanceAppWidget
@@ -43,7 +43,7 @@ class TestGlanceWidgetReceiver : GlanceAppWidgetReceiver() {
 
 object TestGlanceWidget : GlanceAppWidget() {
 
-    val countKey = intPreferencesKey("count")
+    val countKey = longPreferencesKey("count")
 
     override val sizeMode: SizeMode = SizeMode.Exact
 
