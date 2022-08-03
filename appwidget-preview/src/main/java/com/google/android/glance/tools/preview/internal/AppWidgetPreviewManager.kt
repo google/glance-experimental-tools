@@ -31,6 +31,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
+import com.google.android.glance.appwidget.host.appwidgetBackgroundRadiusPixels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -108,25 +109,10 @@ internal class AppWidgetPreviewManager(
         view.layout(view.left, view.top, view.right, view.bottom)
         val clipPath = Path()
         val rect = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
-        val radi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            context.resources.getDimensionPixelSize(
-                android.R.dimen.system_app_widget_background_radius
-            ).toFloat()
-        } else {
-            (16 * context.resources.displayMetrics.density)
-        }
+        val radi = context.appwidgetBackgroundRadiusPixels
         clipPath.addRoundRect(rect, radi, radi, Path.Direction.CW)
         canvas.clipPath(clipPath)
         view.draw(canvas)
         return bitmap
-    }
-
-    private fun View.viewToXml() {
-        // TODO figure out if this is possible
-        //   probably we would need to recreate the full parser by starting from the top view
-        //   check if it's viewgroup or normal view
-        //   check the type from the supported ones (FrameLayout, LinearLayout, TextView...)
-        //   then iterate over all the defined attributes and add the tags to the node
-        //   then go into the children and do the same
     }
 }

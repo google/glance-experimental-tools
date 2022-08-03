@@ -18,8 +18,6 @@ package com.google.android.glance.appwidget.host
 
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetProviderInfo
-import android.content.Context
-import android.os.Build
 import android.widget.RemoteViews
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -57,7 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 
 
-class AppWidgetPreviewHostState(private val state: MutableState<AppWidgetHostView?>) {
+class AppWidgetHostState(private val state: MutableState<AppWidgetHostView?>) {
     var value: AppWidgetHostView?
         get() = state.value
         set(value) {
@@ -74,16 +72,16 @@ class AppWidgetPreviewHostState(private val state: MutableState<AppWidgetHostVie
 }
 
 @Composable
-fun rememberAppWidgetPreviewHost(selectedProvider: AppWidgetProviderInfo) =
+fun rememberAppWidgetHost(selectedProvider: AppWidgetProviderInfo) =
     remember(selectedProvider) {
-        AppWidgetPreviewHostState(mutableStateOf(null))
+        AppWidgetHostState(mutableStateOf(null))
     }
 
 @Composable
-fun AppWidgetPreviewHost(
+fun AppWidgetHost(
     modifier: Modifier = Modifier,
     widgetSize: DpSize,
-    previewState: AppWidgetPreviewHostState,
+    state: AppWidgetHostState,
     showGrid: Boolean = true
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -91,20 +89,22 @@ fun AppWidgetPreviewHost(
             CircularProgressIndicator()
         } else {
             var hostModifier = Modifier.size(widgetSize)
-
             if (showGrid) {
                 val color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
                 hostModifier = hostModifier.dashedBorder(1.dp, 1.dp, color)
                 CellGrid(rows = 5, columns = 5, color = color, modifier = Modifier.fillMaxSize())
             }
-            hostModifier = hostModifier.clip(RoundedCornerShape(LocalContext.current.appwidgetCornerSize))
+
+            val cornerSize = CornerSize(LocalContext.current.appwidgetBackgroundRadius)
+            hostModifier = hostModifier.clip(RoundedCornerShape(cornerSize))
+
             AndroidView(
                 factory = { context ->
                     AppWidgetHostView(context)
                 },
                 modifier = hostModifier,
                 update = { hostView ->
-                    previewState.value = hostView
+                    state.value = hostView
                 }
             )
         }
@@ -158,15 +158,6 @@ private fun Modifier.dashedBorder(width: Dp, radius: Dp, color: Color) =
             )
         }
     }
-
-val Context.appwidgetCornerSize: CornerSize
-    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        val size =
-            resources.getDimensionPixelSize(android.R.dimen.system_app_widget_background_radius)
-        (size / resources.displayMetrics.density).dp
-    } else {
-        16.dp
-    }.run { CornerSize(this) }
 
 @Preview(showSystemUi = true)
 @Composable

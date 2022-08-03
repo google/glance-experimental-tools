@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.google.android.glance.tools.preview.internal.getTargetSize
+import com.google.android.glance.appwidget.host.getTargetSize
 
 @Composable
 internal fun PreviewInfoPanel(providerInfo: AppWidgetProviderInfo) {

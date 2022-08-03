@@ -50,8 +50,8 @@ import androidx.glance.appwidget.GlanceRemoteViews
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.GlanceStateDefinition
-import com.google.android.glance.appwidget.host.AppWidgetPreviewHost
-import com.google.android.glance.appwidget.host.AppWidgetPreviewHostState
+import com.google.android.glance.appwidget.host.AppWidgetHost
+import com.google.android.glance.appwidget.host.AppWidgetHostState
 import kotlinx.coroutines.launch
 
 class AppWidgetConfigurationState(val instance: GlanceAppWidget) {
@@ -135,7 +135,7 @@ fun AppWidgetConfigurationScaffold(
         GlanceRemoteViews()
     }
     val previewState = remember {
-        AppWidgetPreviewHostState(mutableStateOf(null))
+        AppWidgetHostState(mutableStateOf(null))
     }
     if (previewState.isReady && widgetSize != DpSize.Unspecified) {
         LaunchedEffect(
@@ -172,14 +172,14 @@ fun AppWidgetConfigurationScaffold(
                 .fillMaxSize()
                 .padding(it)
         ) {
-            AppWidgetPreviewHost(
+            AppWidgetHost(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(previewColor)
                     .padding(16.dp),
                 widgetSize = widgetSize,
-                previewState = previewState,
+                state = previewState,
                 showGrid = false
             )
             content { configured ->

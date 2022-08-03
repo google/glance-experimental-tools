@@ -16,7 +16,6 @@
 
 package com.google.android.glance.tools.preview
 
-import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.appwidget.AppWidgetProviderInfo
 import android.os.Build
@@ -24,6 +23,7 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,17 +36,18 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.GlanceRemoteViews
 import androidx.glance.appwidget.SizeMode
+import com.google.android.glance.appwidget.host.getSingleSize
+import com.google.android.glance.appwidget.host.getTargetSize
+import com.google.android.glance.appwidget.host.toSizeF
 import com.google.android.glance.tools.preview.internal.AppWidgetPreviewManager
-import com.google.android.glance.tools.preview.internal.getSingleSize
-import com.google.android.glance.tools.preview.internal.getTargetSize
-import com.google.android.glance.tools.preview.internal.toPixels
-import com.google.android.glance.tools.preview.internal.toSizeF
 import com.google.android.glance.tools.preview.internal.ui.PreviewScreen
 import com.google.android.glance.tools.preview.internal.ui.theme.PreviewTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import kotlin.math.ceil
 
 abstract class AppWidgetPreviewActivity : ComponentActivity() {
 
@@ -79,57 +80,16 @@ abstract class AppWidgetPreviewActivity : ComponentActivity() {
                         selectedProvider = selectedProvider.value,
                         currentSize = currentSize.value,
                         preview = ::getAppWidgetPreview,
-                        exportPreview = { previewManager.exportPreview(selectedProvider.value, it) },
+                        exportPreview = {
+                            previewManager.exportPreview(
+                                selectedProvider.value,
+                                it
+                            )
+                        },
                         onResize = { currentSize.value = it },
                         onSelected = { selectedProvider.value = it }
                     )
                 }
-            }
-        }
-    }
-
-    fun AppWidgetProviderInfo.extractOptions(availableSize: DpSize): Bundle {
-        return Bundle().apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                putInt(
-                    AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
-                    minResizeWidth
-                )
-                putInt(
-                    AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-                    minResizeHeight
-                )
-                putInt(
-                    AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                    maxResizeWidth
-                )
-                putInt(
-                    AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
-                    maxResizeHeight
-                )
-                putParcelableArrayList(
-                    AppWidgetManager.OPTION_APPWIDGET_SIZES,
-                    arrayListOf(availableSize.toSizeF())
-                )
-            } else {
-                // TODO to check how this affects the different glance SizeModes
-                val context = this@AppWidgetPreviewActivity
-                putInt(
-                    AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
-                    availableSize.width.toPixels(context)
-                )
-                putInt(
-                    AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-                    availableSize.height.toPixels(context)
-                )
-                putInt(
-                    AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                    availableSize.width.toPixels(context)
-                )
-                putInt(
-                    AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
-                    availableSize.height.toPixels(context)
-                )
             }
         }
     }
@@ -144,6 +104,7 @@ abstract class GlancePreviewActivity : AppWidgetPreviewActivity() {
 
     private val glanceRemoteViews = GlanceRemoteViews()
 
+    @Suppress("UNCHECKED_CAST")
     override suspend fun getAppWidgetPreview(
         info: AppWidgetProviderInfo,
         size: DpSize
@@ -153,12 +114,10 @@ abstract class GlancePreviewActivity : AppWidgetPreviewActivity() {
             "AppWidget is not a GlanceAppWidgetReceiver. Override this method to provide other implementations"
         }
 
-        @Suppress("UNCHECKED_CAST")
-        return getGlancePreview(receiver as Class<out GlanceAppWidgetReceiver>).asRemoteViews(
-            info = info,
-            availableSize = size
-        )
+        val receiverClass = receiver as Class<out GlanceAppWidgetReceiver>
+        return getGlancePreview(receiverClass).asRemoteViews(info, size)
     }
+
 
     private suspend fun GlanceAppWidget.asRemoteViews(
         info: AppWidgetProviderInfo,
@@ -166,40 +125,60 @@ abstract class GlancePreviewActivity : AppWidgetPreviewActivity() {
     ): RemoteViews = withContext(Dispatchers.IO) {
         val state = getGlanceState(this@asRemoteViews)
         when (val mode = sizeMode) {
-            SizeMode.Single -> {
-                glanceRemoteViews.compose(
-                    context = applicationContext,
-                    size = info.getSingleSize(applicationContext),
-                    state = state,
-                    content = { Content() }
-                ).remoteViews
-            }
-            SizeMode.Exact -> {
-                glanceRemoteViews.compose(
-                    context = applicationContext,
-                    size = availableSize,
-                    state = state,
-                    content = { Content() }
-                ).remoteViews
-            }
-            is SizeMode.Responsive -> {
-                val allViews = mode.sizes.map { size ->
-                    async {
-                        size.toSizeF() to glanceRemoteViews.compose(
-                            context = applicationContext,
-                            size = size,
-                            state = state,
-                            content = { Content() }
-                        ).remoteViews
-                    }
-                }.awaitAll()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    allViews.singleOrNull()?.second ?: RemoteViews(allViews.toMap())
-                } else {
-                    // TODO improve this or document that responsive mode only works properly on S+
-                    allViews.singleOrNull()!!.second
-                }
+            SizeMode.Single -> compose(info.getSingleSize(applicationContext), state)
+            SizeMode.Exact -> compose(availableSize, state)
+            is SizeMode.Responsive -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                composeResponsive(mode.sizes, state)
+            } else {
+                compose(findBestSize(availableSize, mode.sizes), state)
             }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private suspend fun GlanceAppWidget.composeResponsive(
+        sizes: Set<DpSize>,
+        state: Any?
+    ) = coroutineScope {
+        val allViews = sizes.map { size ->
+            async {
+                size.toSizeF() to compose(size, state)
+            }
+        }.awaitAll()
+        allViews.singleOrNull()?.second ?: RemoteViews(allViews.toMap())
+    }
+
+    private suspend fun GlanceAppWidget.compose(
+        size: DpSize,
+        state: Any?
+    ): RemoteViews = glanceRemoteViews.compose(
+        context = applicationContext,
+        size = size,
+        state = state,
+        content = { Content() }
+    ).remoteViews
+
+    private fun Collection<DpSize>.sortedBySize() = sortedWith(
+        compareBy({ it.width.value * it.height.value }, { it.width.value })
+    )
+
+    // True if the object fits in the given size.
+    private infix fun DpSize.fitsIn(other: DpSize) =
+        (ceil(other.width.value) + 1 > width.value) &&
+            (ceil(other.height.value) + 1 > height.value)
+
+    private fun squareDistance(widgetSize: DpSize, layoutSize: DpSize): Float {
+        val dw = widgetSize.width.value - layoutSize.width.value
+        val dh = widgetSize.height.value - layoutSize.height.value
+        return dw * dw + dh * dh
+    }
+
+    private fun findBestSize(widgetSize: DpSize, layoutSizes: Collection<DpSize>): DpSize =
+        layoutSizes.mapNotNull { layoutSize ->
+            if (layoutSize fitsIn widgetSize) {
+                layoutSize to squareDistance(widgetSize, layoutSize)
+            } else {
+                null
+            }
+        }.minByOrNull { it.second }?.first ?: layoutSizes.sortedBySize().first()
 }
