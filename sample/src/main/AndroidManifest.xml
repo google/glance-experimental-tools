@@ -11,14 +11,14 @@
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".TestConfigurationActivity"
+            android:name=".AppWidgetConfigurationActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".TestWidgetPreviewActivity"
+            android:name=".SamplePreviewActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,28 +28,28 @@
         </activity>
 
         <receiver
-            android:name=".TestAppWidgetReceiver"
+            android:name=".SampleAppWidgetReceiver"
             android:exported="false"
-            android:label="RemoteViews Test">
+            android:label="RemoteViews Sample">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/app_widget_test" />
+                android:resource="@xml/app_widget_sample" />
         </receiver>
         <receiver
-            android:name=".TestGlanceWidgetReceiver"
+            android:name=".SampleGlanceWidgetReceiver"
             android:exported="false"
-            android:label="Glance Test">
+            android:label="Glance Sample">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/glance_widget_test" />
+                android:resource="@xml/glance_widget_sample" />
         </receiver>
     </application>
 

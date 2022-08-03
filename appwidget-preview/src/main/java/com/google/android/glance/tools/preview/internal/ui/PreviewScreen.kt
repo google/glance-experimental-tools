@@ -179,7 +179,7 @@ internal fun PreviewScreen(
                         .padding(24.dp),
                     widgetSize = currentSize,
                     state = previewHostState,
-                    showGrid = true
+                    gridColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
                 )
             }
         }

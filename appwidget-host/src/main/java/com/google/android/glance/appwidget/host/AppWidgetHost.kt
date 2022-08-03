@@ -25,8 +25,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +54,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 
 
 /**
+ * State for the [AppWidgetHost] that holds the host view and allows to update the appwidget.
+ *
  * @see AppWidgetHost
  */
 class AppWidgetHostState(private val state: MutableState<AppWidgetHostView?>) {
@@ -97,34 +97,43 @@ fun rememberAppWidgetHost(provider: AppWidgetProviderInfo) =
  * @param modifier - The modifier to be applied to the layout.
  * @param widgetSize - The size of the AppWidget host by this view
  * @param state - The [AppWidgetHostState] used to notify changes in the host
- * @param showGrid - A flag to show/hide the grid and widget area lines.
+ * @param gridColor - The color of the grid and widget area lines or null for none.
  */
 @Composable
 fun AppWidgetHost(
     modifier: Modifier = Modifier,
     widgetSize: DpSize,
     state: AppWidgetHostState,
-    showGrid: Boolean = true
+    gridColor: Color? = null
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        if (widgetSize == DpSize.Unspecified) {
-            CircularProgressIndicator()
-        } else {
-            var hostModifier = Modifier.size(widgetSize)
-            if (showGrid) {
-                val color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
-                hostModifier = hostModifier.dashedBorder(1.dp, 1.dp, color)
-                CellGrid(rows = 5, columns = 5, color = color, modifier = Modifier.fillMaxSize())
-            }
+        if (gridColor != null) {
+            CellGrid(
+                rows = 5,
+                columns = 5,
+                color = gridColor,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
 
-            val cornerSize = CornerSize(LocalContext.current.appwidgetBackgroundRadius)
-            hostModifier = hostModifier.clip(RoundedCornerShape(cornerSize))
+        if (widgetSize != DpSize.Unspecified) {
+            val hostModifier = Modifier.size(widgetSize).run {
+                if (gridColor != null) {
+                    dashedBorder(1.dp, 1.dp, gridColor)
+                } else {
+                    this
+                }
+            }
 
             AndroidView(
                 factory = { context ->
                     AppWidgetHostView(context)
                 },
-                modifier = hostModifier,
+                modifier = hostModifier.clip(
+                    RoundedCornerShape(
+                        CornerSize(LocalContext.current.appwidgetBackgroundRadius)
+                    )
+                ),
                 update = { hostView ->
                     state.value = hostView
                 }

@@ -5,6 +5,8 @@
 A composable that uses Material3 Scaffold to display and handle the appwidget activity configuration
 logic for Glance.
 
+<img src="images/glance-configuration-demo.gif" width = 279px>
+
 ## Setup
 
 ```groovy
@@ -19,7 +21,8 @@ dependencies {
 
 ## Usage
 
-Follow the ["Declare the configuration activity"](https://developer.android.com/guide/topics/appwidgets/configuration#declare)
+Follow the
+["Declare the configuration activity"](https://developer.android.com/guide/topics/appwidgets/configuration#declare)
 step in the official guidance to create and register the activity with the Material3 theme of your
 choice:
 
@@ -30,7 +33,7 @@ class MyConfigurationActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyMaterial3Theme {
-                // ...
+                ConfigurationScreen()
             }
         }
     }
@@ -41,27 +44,33 @@ Then, simply add the `AppWidgetConfigurationScaffold` composable with your confi
 and provide the configuration state with the `GlanceAppWidget` instance to use for the preview.
 
 ```kotlin
-val configurationState = rememberAppWidgetConfigurationState(MyGlanceWidget)
-AppWidgetConfigurationScaffold(configurationState) { configured ->
-    MyConfigurationList(
-        onChange = { key, value ->
-            configurationState.updatePreviewState<Preferences> {
-                it.toMutablePreferences().apply {
-                    set(key, value)
-                }.toPreferences()
+@Composable
+private fun ConfigurationScreen() {
+    val configurationState = rememberAppWidgetConfigurationState(SampleGlanceWidget)
+    val scope = rememberCoroutineScope()
+
+    AppWidgetConfigurationScaffold(
+        appWidgetConfigurationState = configurationState,
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                scope.launch {
+                    configurationState.applyConfiguration()
+                }
+            }) {
+                Icon(imageVector = Icons.Rounded.Done, contentDescription = "Save changes")
             }
-        },
-        configured = configured
-    )
+        }
+    ) {
+        // Add your configuration content
+    }
 }
 ```
 
-Call the `updatePreviewState` method to change the widget preview state and reflect the changes.
+Use the `AppWidgetConfigurationState` methods to modify the `GlanceAppWidget` state shown in the
+preview and to apply or discard the changes.
 
-Once the configuration is completed call the provided `configured` lambda with true to apply the
-changes to the widget or false to discard them.
-
-Check the [TestConfigurationActivity](../sample/src/main/java/com/google/android/glance/tools/sample/TestConfigurationActivity.kt)
+Check the
+[AppWidgetConfigurationActivity](../sample/src/main/java/com/google/android/glance/tools/sample/AppWidgetConfigurationActivity.kt)
 sample for more information.
 
 ## Snapshots

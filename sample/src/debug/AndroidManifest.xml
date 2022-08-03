@@ -21,7 +21,7 @@
 
     <application tools:ignore="MissingApplicationIcon">
         <activity
-            android:name=".TestWidgetPreviewActivity"
+            android:name=".SamplePreviewActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

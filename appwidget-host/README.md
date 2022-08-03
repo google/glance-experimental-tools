@@ -39,12 +39,9 @@ fun MyScreen(provider: AppWidgetProviderInfo) {
         }
     }
     AppWidgetHost(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         widgetSize = DpSize(200.dp, 200.dp),
-        state = state,
-        showGrid = true
+        state = state
     )
 }
 ```

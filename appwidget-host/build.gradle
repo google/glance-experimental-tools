@@ -93,14 +93,9 @@ android {
 }
 
 dependencies {
-    implementation libs.glance.appwidget
-
-    implementation libs.androidx.core
-    implementation libs.androidx.activity.compose
+    implementation libs.compose.foundation.foundation
     implementation libs.compose.ui.ui
     implementation libs.compose.ui.tooling.preview
-    implementation libs.compose.material.material3
-    implementation libs.compose.material.material
 
     debugImplementation libs.compose.ui.tooling
     debugImplementation libs.compose.ui.test.manifest
