@@ -106,12 +106,8 @@ dependencies {
 
     androidTestUtil libs.androidx.test.orchestrator
 
-    androidTestImplementation libs.androidx.activity.compose
-    androidTestImplementation libs.compose.material.material
-
     androidTestImplementation libs.junit
     androidTestImplementation libs.truth
-
     androidTestImplementation libs.compose.ui.test.junit4
     androidTestImplementation libs.compose.ui.test.manifest
     androidTestImplementation libs.androidx.test.core

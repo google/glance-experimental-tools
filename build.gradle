@@ -85,7 +85,7 @@ allprojects {
         if (composeSnapshot.length() > 1) {
             maven { url "https://androidx.dev/snapshots/builds/$composeSnapshot/artifacts/repository/" }
         }
-        // TODO add glance
+
         def glanceSnapshot = libs.versions.glancesnapshot.get()
         if (glanceSnapshot.length() > 1) {
             maven { url "https://androidx.dev/snapshots/builds/$glanceSnapshot/artifacts/repository" }
