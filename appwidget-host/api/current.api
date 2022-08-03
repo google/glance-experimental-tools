@@ -1,0 +1,33 @@
+// Signature format: 4.0
+package com.google.android.glance.appwidget.host {
+
+  public final class AppWidgetHostKt {
+    method @androidx.compose.runtime.Composable public static void AppWidgetHost(optional androidx.compose.ui.Modifier modifier, long widgetSize, com.google.android.glance.appwidget.host.AppWidgetHostState state, optional androidx.compose.ui.graphics.Color? gridColor);
+    method @androidx.compose.runtime.Composable @androidx.compose.ui.tooling.preview.Preview(showSystemUi=true) public static void PreviewCellGrid();
+    method @androidx.compose.runtime.Composable public static com.google.android.glance.appwidget.host.AppWidgetHostState rememberAppWidgetHost(android.appwidget.AppWidgetProviderInfo provider);
+  }
+
+  public final class AppWidgetHostState {
+    ctor public AppWidgetHostState(androidx.compose.runtime.MutableState<android.appwidget.AppWidgetHostView> state);
+    method public android.appwidget.AppWidgetHostView? getValue();
+    method public boolean isReady();
+    method public void updateAppWidget(android.widget.RemoteViews remoteViews);
+    property public final boolean isReady;
+    property public final android.appwidget.AppWidgetHostView? value;
+  }
+
+  public final class AppWidgetSizeUtilsKt {
+    method public static float getAppwidgetBackgroundRadius(android.content.Context);
+    method public static float getAppwidgetBackgroundRadiusPixels(android.content.Context);
+    method public static long getMaxSize(android.appwidget.AppWidgetProviderInfo, android.content.Context context);
+    method public static long getMinSize(android.appwidget.AppWidgetProviderInfo, android.content.Context context);
+    method public static long getSingleSize(android.appwidget.AppWidgetProviderInfo, android.content.Context context);
+    method public static long getTargetSize(android.appwidget.AppWidgetProviderInfo, android.content.Context context);
+    method public static int toPixels(float, android.content.Context context);
+    method public static int toPixels(float, android.util.DisplayMetrics displayMetrics);
+    method public static android.os.Bundle toSizeExtras(android.appwidget.AppWidgetProviderInfo, android.content.Context context, long availableSize);
+    method public static android.util.SizeF toSizeF(long);
+  }
+
+}
+

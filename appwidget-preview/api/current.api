@@ -1,0 +1,44 @@
+// Signature format: 4.0
+package com.google.android.glance.tools.preview {
+
+  public abstract class AppWidgetPreviewActivity extends androidx.activity.ComponentActivity {
+    ctor public AppWidgetPreviewActivity();
+    method public abstract suspend Object? getAppWidgetPreview(android.appwidget.AppWidgetProviderInfo info, long size, kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
+    method public abstract java.util.List<java.lang.Class<? extends android.appwidget.AppWidgetProvider>> getProviders();
+  }
+
+  @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public abstract class GlancePreviewActivity extends com.google.android.glance.tools.preview.AppWidgetPreviewActivity {
+    ctor public GlancePreviewActivity();
+    method public suspend Object? getAppWidgetPreview(android.appwidget.AppWidgetProviderInfo info, long size, kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
+    method public abstract suspend Object? getGlancePreview(Class<? extends androidx.glance.appwidget.GlanceAppWidgetReceiver> receiver, kotlin.coroutines.Continuation<? super androidx.glance.appwidget.GlanceAppWidget> p);
+    method public suspend Object? getGlanceState(androidx.glance.appwidget.GlanceAppWidget instance, kotlin.coroutines.Continuation<? super java.lang.Object> p);
+  }
+
+}
+
+package com.google.android.glance.tools.preview.internal.ui {
+
+  public final class PreviewInfoPanelKt {
+  }
+
+  public final class PreviewResizePanelKt {
+  }
+
+  public final class PreviewScreenKt {
+  }
+
+}
+
+package com.google.android.glance.tools.preview.internal.ui.theme {
+
+  public final class ColorKt {
+  }
+
+  public final class ThemeKt {
+  }
+
+  public final class TypeKt {
+  }
+
+}
+
