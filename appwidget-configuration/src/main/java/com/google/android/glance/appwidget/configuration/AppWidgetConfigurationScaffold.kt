@@ -144,7 +144,7 @@ fun AppWidgetConfigurationScaffold(
             appWidgetConfigurationState.instance,
             widgetSize
         ) {
-            previewState.updatePreview(
+            previewState.updateAppWidget(
                 remoteViews.compose(
                     context = activity,
                     size = widgetSize,

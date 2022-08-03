@@ -55,28 +55,50 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 
 
+/**
+ * @see AppWidgetHost
+ */
 class AppWidgetHostState(private val state: MutableState<AppWidgetHostView?>) {
+
+    /**
+     * The current [AppWidgetHostView] instance or null if not laid out yet.
+     */
     var value: AppWidgetHostView?
         get() = state.value
-        set(value) {
+        internal set(value) {
             state.value = value
         }
 
+    /**
+     * True if the host is ready to display RemoteViews, false otherwise
+     */
     val isReady: Boolean
         get() = state.value != null
 
-    fun updatePreview(preview: RemoteViews) {
+    /**
+     * Update the current host (if available) to display the provided [RemoteViews]
+     */
+    fun updateAppWidget(remoteViews: RemoteViews) {
         val host = value ?: return
-        host.updateAppWidget(preview)
+        host.updateAppWidget(remoteViews)
     }
 }
 
 @Composable
-fun rememberAppWidgetHost(selectedProvider: AppWidgetProviderInfo) =
-    remember(selectedProvider) {
+fun rememberAppWidgetHost(provider: AppWidgetProviderInfo) =
+    remember(provider) {
         AppWidgetHostState(mutableStateOf(null))
     }
 
+/**
+ * A layout composable with an [AppWidgetHostView] to display the provided [RemoteViews] from the
+ * state.
+ *
+ * @param modifier - The modifier to be applied to the layout.
+ * @param widgetSize - The size of the AppWidget host by this view
+ * @param state - The [AppWidgetHostState] used to notify changes in the host
+ * @param showGrid - A flag to show/hide the grid and widget area lines.
+ */
 @Composable
 fun AppWidgetHost(
     modifier: Modifier = Modifier,

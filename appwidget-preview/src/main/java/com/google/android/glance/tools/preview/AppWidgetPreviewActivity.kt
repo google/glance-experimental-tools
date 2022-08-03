@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.CallSuper
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -49,10 +50,24 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import kotlin.math.ceil
 
+/**
+ * Base class to display preview of AppWidgets.
+ */
 abstract class AppWidgetPreviewActivity : ComponentActivity() {
 
+    /**
+     * The list of [AppWidgetProvider] to display previews
+     */
     abstract fun getProviders(): List<Class<out AppWidgetProvider>>
 
+    /**
+     * Provides the [RemoteViews] preview of the given [AppWidgetProviderInfo] for the given size
+     *
+     * @param - The [AppWidgetProviderInfo] containing the metadata of the appwidget
+     * @param - The available size to display the appwidget
+     *
+     * @return the [RemoteViews] instance to use for the preview.
+     */
     abstract suspend fun getAppWidgetPreview(
         info: AppWidgetProviderInfo,
         size: DpSize
@@ -62,6 +77,7 @@ abstract class AppWidgetPreviewActivity : ComponentActivity() {
     private lateinit var selectedProvider: MutableState<AppWidgetProviderInfo>
     private lateinit var currentSize: MutableState<DpSize>
 
+    @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val previewManager = AppWidgetPreviewManager(this, getProviders())
@@ -95,15 +111,35 @@ abstract class AppWidgetPreviewActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Extend this activity to provide a set of GlanceAppWidget previews to display.
+ */
 @ExperimentalGlanceRemoteViewsApi
 abstract class GlancePreviewActivity : AppWidgetPreviewActivity() {
 
+    /**
+     * Provides an instance of [GlanceAppWidget] to display inside the preview.
+     *
+     * @param receiver - The selected [GlanceAppWidgetReceiver] to display a preview
+     */
     abstract suspend fun getGlancePreview(receiver: Class<out GlanceAppWidgetReceiver>): GlanceAppWidget
 
+    /**
+     * Provide a state to use for the [androidx.glance.state.GlanceStateDefinition] when composing
+     * the provided [GlanceAppWidget] instance.
+     *
+     * @param instance - The [GlanceAppWidget] instance that will be used to compose the preview
+     */
     open suspend fun getGlanceState(instance: GlanceAppWidget): Any? = null
 
     private val glanceRemoteViews = GlanceRemoteViews()
 
+    /**
+     * Only override this method to directly provide [RemoteViews] instead of [GlanceAppWidget]
+     * instances.
+     *
+     * @see AppWidgetPreviewActivity.getAppWidgetPreview
+     */
     @Suppress("UNCHECKED_CAST")
     override suspend fun getAppWidgetPreview(
         info: AppWidgetProviderInfo,

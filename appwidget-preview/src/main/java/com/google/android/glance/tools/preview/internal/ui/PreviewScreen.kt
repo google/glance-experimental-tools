@@ -93,12 +93,12 @@ internal fun PreviewScreen(
     if (previewHostState.isReady) {
         LaunchedEffect(previewHostState.value) {
             // Show first the initial layout
-            previewHostState.updatePreview(
+            previewHostState.updateAppWidget(
                 RemoteViews(context.packageName, selectedProvider.initialLayout)
             )
 
             // Then request the actual preview
-            previewHostState.updatePreview(
+            previewHostState.updateAppWidget(
                 preview(selectedProvider, currentSize)
             )
         }
@@ -106,7 +106,7 @@ internal fun PreviewScreen(
             LaunchedEffect(currentSize) {
                 // If the user is in resizing mode debounce the updates by delaying them.
                 delay(500)
-                previewHostState.updatePreview(
+                previewHostState.updateAppWidget(
                     preview(selectedProvider, currentSize)
                 )
             }
@@ -150,7 +150,7 @@ internal fun PreviewScreen(
                         appWidgetHostState = previewHostState,
                         onUpdate = {
                             scope.launch {
-                                previewHostState.updatePreview(
+                                previewHostState.updateAppWidget(
                                     preview(selectedProvider, currentSize)
                                 )
                             }
