@@ -244,7 +244,8 @@ private fun PreviewBottomBar(
                 enabled = appWidgetHostState.isReady,
                 onClick = {
                     onShowPanel(PreviewPanel.Resize)
-                }) {
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     contentDescription = null
@@ -254,7 +255,8 @@ private fun PreviewBottomBar(
                 enabled = appWidgetHostState.isReady,
                 onClick = {
                     onShowPanel(PreviewPanel.Info)
-                }) {
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Info,
                     contentDescription = null
@@ -264,7 +266,8 @@ private fun PreviewBottomBar(
                 enabled = appWidgetHostState.isReady,
                 onClick = {
                     onUpdate()
-                }) {
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Refresh,
                     contentDescription = null
@@ -308,7 +311,8 @@ private fun PreviewDrawer(
                         Icons.Rounded.Done
                     } else {
                         Icons.Rounded.KeyboardArrowRight
-                    }, contentDescription = null
+                    },
+                    contentDescription = null
                 )
             },
             label = { Text(item.loadLabel(LocalContext.current.packageManager)) },

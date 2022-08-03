@@ -144,9 +144,9 @@ internal fun PreviewInfoPanel(providerInfo: AppWidgetProviderInfo) {
                 )
                 val isReconfigurable =
                     providerInfo.widgetFeatures ==
-                            AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE ||
-                            providerInfo.widgetFeatures == AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE + AppWidgetProviderInfo.WIDGET_FEATURE_CONFIGURATION_OPTIONAL ||
-                            providerInfo.widgetFeatures == AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE + AppWidgetProviderInfo.WIDGET_FEATURE_CONFIGURATION_OPTIONAL + AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER
+                        AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE ||
+                        providerInfo.widgetFeatures == AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE + AppWidgetProviderInfo.WIDGET_FEATURE_CONFIGURATION_OPTIONAL ||
+                        providerInfo.widgetFeatures == AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE + AppWidgetProviderInfo.WIDGET_FEATURE_CONFIGURATION_OPTIONAL + AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER
                 InfoText(
                     key = "Reconfigurable",
                     value = if (isReconfigurable) "Yes" else "No",

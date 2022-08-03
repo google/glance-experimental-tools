@@ -154,7 +154,6 @@ abstract class GlancePreviewActivity : AppWidgetPreviewActivity() {
         return getGlancePreview(receiverClass).asRemoteViews(info, size)
     }
 
-
     private suspend fun GlanceAppWidget.asRemoteViews(
         info: AppWidgetProviderInfo,
         availableSize: DpSize

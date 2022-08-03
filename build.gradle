@@ -208,8 +208,7 @@ subprojects {
                 sourceLink {
                     localDirectory.set(project.file("src/main/java"))
                     // URL showing where the source code can be accessed through the web browser
-                    // TODO change url
-                    remoteUrl.set(new URL("https://github.com/google/android/glance/tools/blob/main/${project.name}/src/main/java"))
+                    remoteUrl.set(new URL("https://github.com/google/glance-experimental-tools/blob/main/${project.name}/src/main/java"))
                     // Suffix which is used to append the line number to the URL. Use #L for GitHub
                     remoteLineSuffix.set("#L")
                 }

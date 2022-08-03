@@ -72,6 +72,7 @@ internal fun PreviewResizePanel(
             modifier = padding,
             value = currentSize.height.value,
             valueRange = 48f..configuration.screenHeightDp.toFloat(),
-            onValueChange = { onSizeChange(currentSize.copy(height = it.dp)) })
+            onValueChange = { onSizeChange(currentSize.copy(height = it.dp)) }
+        )
     }
 }

@@ -52,7 +52,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 
-
 /**
  * State for the [AppWidgetHost] that holds the host view and allows to update the appwidget.
  *

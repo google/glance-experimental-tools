@@ -36,7 +36,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-
 internal class AppWidgetPreviewManager(
     private val context: Context,
     private val providers: List<Class<out AppWidgetProvider>>

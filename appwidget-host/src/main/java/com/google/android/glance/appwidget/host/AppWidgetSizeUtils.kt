@@ -60,7 +60,6 @@ fun AppWidgetProviderInfo.getMinSize(context: Context): DpSize = DpSize(
     height = minResizeHeight.pixelsToDp(context)
 )
 
-
 fun AppWidgetProviderInfo.getSingleSize(context: Context): DpSize {
     val minWidth = min(
         minWidth,
