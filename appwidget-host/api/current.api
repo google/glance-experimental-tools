@@ -4,7 +4,7 @@ package com.google.android.glance.appwidget.host {
   public final class AppWidgetHostKt {
     method @androidx.compose.runtime.Composable public static void AppWidgetHost(optional androidx.compose.ui.Modifier modifier, long widgetSize, com.google.android.glance.appwidget.host.AppWidgetHostState state, optional androidx.compose.ui.graphics.Color? gridColor);
     method @androidx.compose.runtime.Composable @androidx.compose.ui.tooling.preview.Preview(showSystemUi=true) public static void PreviewCellGrid();
-    method @androidx.compose.runtime.Composable public static com.google.android.glance.appwidget.host.AppWidgetHostState rememberAppWidgetHost(android.appwidget.AppWidgetProviderInfo provider);
+    method @androidx.compose.runtime.Composable public static error.NonExistentClass! rememberAppWidgetHost(android.appwidget.AppWidgetProviderInfo provider);
   }
 
   public final class AppWidgetHostState {
