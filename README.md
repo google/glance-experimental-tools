@@ -1,5 +1,7 @@
 # Glance Experimental Tools
 
+> 🚧 Work in-progress: artifacts not available yet
+
 This project aims to supplement Jetpack Glance with features that are commonly required by developers
 but not yet available.
 
@@ -14,9 +16,11 @@ A simple composable to display RemoteViews inside your app.
 
 ### 🖼️ [appwidget-preview](./appwidget-preview)
 
-A debug tool to display AppWidget previews embedded inside the app and enable "Live Edits".
+A debug tool to display AppWidget previews embedded inside the app and enable
+"[Live Edits](https://developer.android.com/studio/run#live-edit)" or
+"[Apply Changes](https://developer.android.com/studio/run#apply-changes)".
 
-### 🛠️ [appwidget-configuration](./appwidget-configuration)
+### 🛠️🎨 [appwidget-configuration](./appwidget-configuration)
 
 A Material3 Scaffold implementation for appwidget configuration activities.
 

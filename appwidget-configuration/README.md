@@ -40,7 +40,7 @@ class MyConfigurationActivity : ComponentActivity() {
 }
 ```
 
-Then, simply add the `AppWidgetConfigurationScaffold` composable with your configuration content UI
+Then, add the `AppWidgetConfigurationScaffold` composable with your configuration content UI
 and provide the configuration state with the `GlanceAppWidget` instance to use for the preview.
 
 ```kotlin
@@ -66,8 +66,13 @@ private fun ConfigurationScreen() {
 }
 ```
 
-Use the `AppWidgetConfigurationState` methods to modify the `GlanceAppWidget` state shown in the
+Use the `AppWidgetConfigurationState` methods to update the `GlanceAppWidget` state shown in the
 preview and to apply or discard the changes.
+
+* `updateCurrentState<T>(update: (T) -> T)`: updates the `GlanceAppWidget` state for the configuration preview without modifying the actual state.
+* `getCurrentState()`: get the current `GlanceAppWidget` state for the configuration preview (before calling `updateCurrentState` it will be the actual state).
+* `applyConfiguration()`: updates the actual `GlanceAppWidget` instance state and finish the activity.
+* `discardConfiguration()`: discards any state changes and finishes the activity with `RESULT_CANCELED`.
 
 Check the
 [AppWidgetConfigurationActivity](../sample/src/main/java/com/google/android/glance/tools/sample/AppWidgetConfigurationActivity.kt)
