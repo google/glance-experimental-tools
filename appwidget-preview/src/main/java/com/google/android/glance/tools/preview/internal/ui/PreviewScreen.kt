@@ -29,12 +29,13 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.PushPin
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.BottomAppBar
@@ -80,7 +81,8 @@ internal fun PreviewScreen(
     preview: suspend (AppWidgetProviderInfo, DpSize) -> RemoteViews,
     exportPreview: suspend (AppWidgetHostView) -> Result<Uri>,
     onResize: (DpSize) -> Unit,
-    onSelected: (AppWidgetProviderInfo) -> Unit
+    onSelected: (AppWidgetProviderInfo) -> Unit,
+    onPin: suspend (AppWidgetProviderInfo) -> Boolean
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -159,6 +161,17 @@ internal fun PreviewScreen(
                             previewPanelState = it
                             scope.launch { bottomSheetState.show() }
                         },
+                        onPin = {
+                            scope.launch {
+                                val requested = onPin(selectedProvider)
+                                if (!requested) {
+                                    snackbarHostState.showSnackbar(
+                                        message = "Launcher does not support AppWidget pinning.",
+                                        withDismissAction = true
+                                    )
+                                }
+                            }
+                        },
                         onExport = {
                             scope.launch {
                                 doExport(
@@ -221,6 +234,7 @@ private fun PreviewBottomBar(
     appWidgetHostState: AppWidgetHostState,
     onUpdate: () -> Unit,
     onShowPanel: (PreviewPanel) -> Unit,
+    onPin: () -> Unit,
     onExport: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -236,7 +250,7 @@ private fun PreviewBottomBar(
                 }
             }) {
                 Icon(
-                    imageVector = Icons.Filled.Menu,
+                    imageVector = Icons.Rounded.Menu,
                     contentDescription = null
                 )
             }
@@ -247,7 +261,7 @@ private fun PreviewBottomBar(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Settings,
+                    imageVector = Icons.Outlined.Tune,
                     contentDescription = null
                 )
             }
@@ -258,7 +272,7 @@ private fun PreviewBottomBar(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Info,
+                    imageVector = Icons.Outlined.Description,
                     contentDescription = null
                 )
             }
@@ -269,7 +283,18 @@ private fun PreviewBottomBar(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Refresh,
+                    imageVector = Icons.Outlined.Refresh,
+                    contentDescription = null
+                )
+            }
+            IconButton(
+                enabled = appWidgetHostState.isReady,
+                onClick = {
+                    onPin()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.PushPin,
                     contentDescription = null
                 )
             }

@@ -103,7 +103,16 @@ abstract class AppWidgetPreviewActivity : ComponentActivity() {
                             )
                         },
                         onResize = { currentSize.value = it },
-                        onSelected = { selectedProvider.value = it }
+                        onSelected = { selectedProvider.value = it },
+                        onPin = { providerInfo ->
+                            previewManager.requestPin(
+                                providerInfo,
+                                getAppWidgetPreview(
+                                    info = providerInfo,
+                                    size = providerInfo.getTargetSize(this)
+                                )
+                            )
+                        }
                     )
                 }
             }

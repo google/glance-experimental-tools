@@ -28,9 +28,11 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
+import android.widget.RemoteViews
 import com.google.android.glance.appwidget.host.appwidgetBackgroundRadiusPixels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -57,6 +59,16 @@ internal class AppWidgetPreviewManager(
                 selectedProvider.name == info.provider.className
             }
         }
+    }
+
+    fun requestPin(info: AppWidgetProviderInfo, preview: RemoteViews): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && widgetManager.isRequestPinAppWidgetSupported) {
+            val previewBundle = Bundle().apply {
+                putParcelable(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW, preview)
+            }
+            return widgetManager.requestPinAppWidget(info.provider, previewBundle, null)
+        }
+        return false
     }
 
     suspend fun exportPreview(
