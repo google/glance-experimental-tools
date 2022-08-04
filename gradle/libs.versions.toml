@@ -4,7 +4,7 @@ composeCompiler = "1.3.0-rc01"
 composesnapshot = "-" # a single character = no snapshot
 
 glance = "1.0.0-SNAPSHOT" # non-snapshot version: 1.0.0-alpha03
-glancesnapshot = "8879405" # a single character = no snapshot
+glancesnapshot = "8905190" # a single character = no snapshot
 
 # gradlePlugin and lint need to be updated together
 gradlePlugin = "7.4.0-alpha08"
