@@ -17,7 +17,8 @@
 ENCRYPT_KEY=$1
 
 if [[ ! -z "$ENCRYPT_KEY" ]]; then
-  openssl aes-256-cbc -md sha256 -d -in release/signing.properties.aes -out release/signing.properties -k ${ENCRYPT_KEY}
+  openssl aes-256-cbc -d -in release/secring.gpg.aes -out release/secring.gpg -k ${ENCRYPT_KEY}
+  openssl aes-256-cbc -d -in release/signing.properties.aes -out release/signing.properties -k ${ENCRYPT_KEY}
 else
   echo "ENCRYPT_KEY is empty"
 fi
