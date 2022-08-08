@@ -46,7 +46,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -188,9 +187,3 @@ private fun Modifier.dashedBorder(width: Dp, radius: Dp, color: Color) =
             )
         }
     }
-
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewCellGrid() {
-    CellGrid(rows = 4, columns = 4, color = Color.Red, modifier = Modifier.size(512.dp))
-}
