@@ -17,7 +17,7 @@
 package com.google.android.glance.appwidget.host
 
 import android.appwidget.AppWidgetHostView
-import android.appwidget.AppWidgetProviderInfo
+import android.appwidget.AppWidgetManager
 import android.widget.RemoteViews
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -46,7 +46,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -84,24 +83,23 @@ class AppWidgetHostState(private val state: MutableState<AppWidgetHostView?>) {
 }
 
 @Composable
-fun rememberAppWidgetHost(provider: AppWidgetProviderInfo) =
-    remember(provider) {
-        AppWidgetHostState(mutableStateOf(null))
-    }
+fun rememberAppWidgetHost(key: Any? = null) = remember(key) {
+    AppWidgetHostState(mutableStateOf(null))
+}
 
 /**
  * A layout composable with an [AppWidgetHostView] to display the provided [RemoteViews] from the
  * state.
  *
  * @param modifier - The modifier to be applied to the layout.
- * @param widgetSize - The size of the AppWidget host by this view
+ * @param displaySize - The available size for the RemoteViews to display by the host
  * @param state - The [AppWidgetHostState] used to notify changes in the host
  * @param gridColor - The color of the grid and widget area lines or null for none.
  */
 @Composable
 fun AppWidgetHost(
     modifier: Modifier = Modifier,
-    widgetSize: DpSize,
+    displaySize: DpSize,
     state: AppWidgetHostState,
     gridColor: Color? = null
 ) {
@@ -115,8 +113,8 @@ fun AppWidgetHost(
             )
         }
 
-        if (widgetSize != DpSize.Unspecified) {
-            val hostModifier = Modifier.size(widgetSize).run {
+        if (displaySize != DpSize.Unspecified) {
+            val hostModifier = Modifier.size(displaySize).run {
                 if (gridColor != null) {
                     dashedBorder(1.dp, 1.dp, gridColor)
                 } else {
@@ -134,6 +132,16 @@ fun AppWidgetHost(
                     )
                 ),
                 update = { hostView ->
+                    if (hostView != state.value) {
+                        // The hostView requires an AppWidgetProviderInfo to work in certain
+                        // OS versions. Take the first one even if it's not the right one.
+                        with(hostView) {
+                            val info = AppWidgetManager.getInstance(context)
+                                .installedProviders.firstOrNull()
+                            setAppWidget(1, info)
+                            setPadding(0, 0, 0, 0)
+                        }
+                    }
                     state.value = hostView
                 }
             )
@@ -188,9 +196,3 @@ private fun Modifier.dashedBorder(width: Dp, radius: Dp, color: Color) =
             )
         }
     }
-
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewCellGrid() {
-    CellGrid(rows = 4, columns = 4, color = Color.Red, modifier = Modifier.size(512.dp))
-}

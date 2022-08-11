@@ -95,10 +95,6 @@ android {
 dependencies {
     implementation libs.compose.foundation.foundation
     implementation libs.compose.ui.ui
-    implementation libs.compose.ui.tooling.preview
-
-    debugImplementation libs.compose.ui.tooling
-    debugImplementation libs.compose.ui.test.manifest
 
     // ======================
     // Test dependencies
