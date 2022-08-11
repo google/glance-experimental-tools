@@ -59,7 +59,7 @@ import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.GlanceStateDefinition
 import com.google.android.glance.appwidget.host.AppWidgetHost
-import com.google.android.glance.appwidget.host.AppWidgetHostState
+import com.google.android.glance.appwidget.host.rememberAppWidgetHost
 
 /**
  * Use to manage the [AppWidgetConfigurationScaffold] state.
@@ -252,9 +252,8 @@ fun AppWidgetConfigurationScaffold(
     val remoteViews = remember {
         GlanceRemoteViews()
     }
-    val previewState = remember {
-        AppWidgetHostState(mutableStateOf(null))
-    }
+    val previewState = rememberAppWidgetHost()
+
     if (previewState.isReady && widgetSize != DpSize.Unspecified) {
         LaunchedEffect(
             previewState,
@@ -293,7 +292,7 @@ fun AppWidgetConfigurationScaffold(
                     .background(previewColor)
                     .padding(it)
                     .padding(16.dp),
-                widgetSize = widgetSize,
+                displaySize = widgetSize,
                 state = previewState
             )
             content(it)

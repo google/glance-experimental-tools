@@ -190,7 +190,7 @@ internal fun PreviewScreen(
                         .fillMaxSize()
                         .padding(innerPadding)
                         .padding(24.dp),
-                    widgetSize = currentSize,
+                    displaySize = currentSize,
                     state = previewHostState,
                     gridColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
                 )
