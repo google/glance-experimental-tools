@@ -17,7 +17,9 @@
 package com.google.android.glance.appwidget.host
 
 import android.appwidget.AppWidgetHostView
-import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProviderInfo
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.widget.RemoteViews
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -50,6 +52,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import java.util.concurrent.Executors
 
 /**
  * State for the [AppWidgetHost] that holds the host view and allows to update the appwidget.
@@ -124,7 +127,11 @@ fun AppWidgetHost(
 
             AndroidView(
                 factory = { context ->
-                    AppWidgetHostView(context)
+                    AppWidgetHostView(context).apply {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            setExecutor(Executors.newSingleThreadExecutor())
+                        }
+                    }
                 },
                 modifier = hostModifier.clip(
                     RoundedCornerShape(
@@ -133,19 +140,41 @@ fun AppWidgetHost(
                 ),
                 update = { hostView ->
                     if (hostView != state.value) {
-                        // The hostView requires an AppWidgetProviderInfo to work in certain
-                        // OS versions. Take the first one even if it's not the right one.
-                        with(hostView) {
-                            val info = AppWidgetManager.getInstance(context)
-                                .installedProviders.firstOrNull()
-                            setAppWidget(1, info)
-                            setPadding(0, 0, 0, 0)
-                        }
+                        hostView.init()
                     }
                     state.value = hostView
                 }
             )
         }
+    }
+}
+
+/**
+ * The hostView requires an AppWidgetProviderInfo to work in certain OS versions. This method uses
+ * reflection to set a fake provider info.
+ */
+private fun AppWidgetHostView.init() {
+    val context = context
+    val info = AppWidgetProviderInfo()
+    try {
+        val activityInfo = ActivityInfo().apply {
+            applicationInfo = context.applicationInfo
+            packageName = context.packageName
+            labelRes = applicationInfo.labelRes
+        }
+
+        info::class.java.getDeclaredField("providerInfo").run {
+            isAccessible = true
+            set(info, activityInfo)
+        }
+
+        this::class.java.getDeclaredField("mInfo").apply {
+            isAccessible = true
+            set(this@init, info)
+        }
+    } catch (e: Exception) {
+        // TODO consider if we try a fallback method like setting any provider if the app has
+        throw IllegalStateException("Couldn't not set fake provider", e)
     }
 }
 
