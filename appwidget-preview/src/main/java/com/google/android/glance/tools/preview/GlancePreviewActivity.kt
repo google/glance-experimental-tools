@@ -126,22 +126,14 @@ abstract class AppWidgetPreviewActivity : ComponentActivity() {
 @ExperimentalGlanceRemoteViewsApi
 abstract class GlancePreviewActivity : AppWidgetPreviewActivity() {
 
+    private val glanceRemoteViews = GlanceRemoteViews()
+
     /**
      * Provides an instance of [GlanceAppWidget] to display inside the preview.
      *
      * @param receiver - The selected [GlanceAppWidgetReceiver] to display a preview
      */
-    abstract suspend fun getGlancePreview(receiver: Class<out GlanceAppWidgetReceiver>): GlanceAppWidget
-
-    /**
-     * Provide a state to use for the [androidx.glance.state.GlanceStateDefinition] when composing
-     * the provided [GlanceAppWidget] instance.
-     *
-     * @param instance - The [GlanceAppWidget] instance that will be used to compose the preview
-     */
-    open suspend fun getGlanceState(instance: GlanceAppWidget): Any? = null
-
-    private val glanceRemoteViews = GlanceRemoteViews()
+    abstract suspend fun getGlancePreview(receiver: Class<out GlanceAppWidgetReceiver>): GlancePreview
 
     /**
      * Only override this method to directly provide [RemoteViews] instead of [GlanceAppWidget]
@@ -153,29 +145,28 @@ abstract class GlancePreviewActivity : AppWidgetPreviewActivity() {
     override suspend fun getAppWidgetPreview(
         info: AppWidgetProviderInfo,
         size: DpSize
-    ): RemoteViews {
+    ): RemoteViews = withContext(Dispatchers.IO) {
         val receiver = Class.forName(info.provider.className)
         require(GlanceAppWidgetReceiver::class.java.isAssignableFrom(receiver)) {
             "AppWidget is not a GlanceAppWidgetReceiver. Override this method to provide other implementations"
         }
 
         val receiverClass = receiver as Class<out GlanceAppWidgetReceiver>
-        return getGlancePreview(receiverClass).asRemoteViews(info, size)
+        val preview = getGlancePreview(receiverClass)
+        preview.instance.asRemoteViews(preview.state, info, size)
     }
 
     private suspend fun GlanceAppWidget.asRemoteViews(
+        state: Any?,
         info: AppWidgetProviderInfo,
         availableSize: DpSize
-    ): RemoteViews = withContext(Dispatchers.IO) {
-        val state = getGlanceState(this@asRemoteViews)
-        when (val mode = sizeMode) {
-            SizeMode.Single -> compose(info.getSingleSize(applicationContext), state)
-            SizeMode.Exact -> compose(availableSize, state)
-            is SizeMode.Responsive -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                composeResponsive(mode.sizes, state)
-            } else {
-                compose(findBestSize(availableSize, mode.sizes), state)
-            }
+    ): RemoteViews = when (val mode = sizeMode) {
+        SizeMode.Single -> compose(info.getSingleSize(applicationContext), state)
+        SizeMode.Exact -> compose(availableSize, state)
+        is SizeMode.Responsive -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            composeResponsive(mode.sizes, state)
+        } else {
+            compose(findBestSize(availableSize, mode.sizes), state)
         }
     }
 
