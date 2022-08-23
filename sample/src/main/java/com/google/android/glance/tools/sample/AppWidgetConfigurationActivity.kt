@@ -97,8 +97,14 @@ class AppWidgetConfigurationActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlanceRemoteViewsApi::class)
 @Composable
 private fun SampleConfigScreen() {
-    val configurationState = rememberAppWidgetConfigurationState(SampleGlanceWidget)
     val scope = rememberCoroutineScope()
+    val configurationState = rememberAppWidgetConfigurationState(SampleGlanceWidget)
+
+    // If we don't have a valid id, discard configuration and finish the activity.
+    if (configurationState.glanceId == null) {
+        configurationState.discardConfiguration()
+        return
+    }
 
     AppWidgetConfigurationScaffold(
         appWidgetConfigurationState = configurationState,

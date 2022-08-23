@@ -3,15 +3,17 @@ package com.google.android.glance.appwidget.host {
 
   public final class AppWidgetHostKt {
     method @androidx.compose.runtime.Composable public static void AppWidgetHost(optional androidx.compose.ui.Modifier modifier, long displaySize, com.google.android.glance.appwidget.host.AppWidgetHostState state, optional androidx.compose.ui.graphics.Color? gridColor);
-    method @androidx.compose.runtime.Composable public static com.google.android.glance.appwidget.host.AppWidgetHostState rememberAppWidgetHost(optional Object? key);
+    method @androidx.compose.runtime.Composable public static com.google.android.glance.appwidget.host.AppWidgetHostState rememberAppWidgetHost(optional android.appwidget.AppWidgetProviderInfo? providerInfo);
   }
 
   public final class AppWidgetHostState {
-    ctor public AppWidgetHostState(androidx.compose.runtime.MutableState<android.appwidget.AppWidgetHostView> state);
+    ctor public AppWidgetHostState(android.appwidget.AppWidgetProviderInfo? providerInfo, androidx.compose.runtime.MutableState<android.appwidget.AppWidgetHostView> state);
+    method public android.appwidget.AppWidgetProviderInfo? getProviderInfo();
     method public android.appwidget.AppWidgetHostView? getValue();
     method public boolean isReady();
     method public void updateAppWidget(android.widget.RemoteViews remoteViews);
     property public final boolean isReady;
+    property public final android.appwidget.AppWidgetProviderInfo? providerInfo;
     property public final android.appwidget.AppWidgetHostView? value;
   }
 

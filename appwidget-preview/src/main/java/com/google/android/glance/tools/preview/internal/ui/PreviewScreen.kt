@@ -46,6 +46,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
@@ -239,7 +240,7 @@ private fun PreviewBottomBar(
 ) {
     val scope = rememberCoroutineScope()
     BottomAppBar(
-        icons = {
+        actions = {
             IconButton(onClick = {
                 scope.launch {
                     if (drawerState.isClosed) {
@@ -323,30 +324,32 @@ private fun PreviewDrawer(
     onSelected: (AppWidgetProviderInfo) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    Text(
-        "Select widget",
-        style = MaterialTheme.typography.headlineSmall,
-        modifier = Modifier.padding(16.dp)
-    )
-    providers.forEach { item ->
-        NavigationDrawerItem(
-            icon = {
-                Icon(
-                    imageVector = if (selectedProvider == item) {
-                        Icons.Rounded.Done
-                    } else {
-                        Icons.Rounded.KeyboardArrowRight
-                    },
-                    contentDescription = null
-                )
-            },
-            label = { Text(item.loadLabel(LocalContext.current.packageManager)) },
-            selected = item == selectedProvider,
-            onClick = {
-                scope.launch { drawerState.close() }
-                onSelected(item)
-            },
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+    ModalDrawerSheet {
+        Text(
+            "Select widget",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(16.dp)
         )
+        providers.forEach { item ->
+            NavigationDrawerItem(
+                icon = {
+                    Icon(
+                        imageVector = if (selectedProvider == item) {
+                            Icons.Rounded.Done
+                        } else {
+                            Icons.Rounded.KeyboardArrowRight
+                        },
+                        contentDescription = null
+                    )
+                },
+                label = { Text(item.loadLabel(LocalContext.current.packageManager)) },
+                selected = item == selectedProvider,
+                onClick = {
+                    scope.launch { drawerState.close() }
+                    onSelected(item)
+                },
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
+        }
     }
 }

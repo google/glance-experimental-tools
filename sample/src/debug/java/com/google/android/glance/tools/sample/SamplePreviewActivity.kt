@@ -21,14 +21,33 @@ import android.widget.RemoteViews
 import androidx.compose.ui.unit.DpSize
 import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
-import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import com.google.android.glance.tools.preview.GlancePreview
 import com.google.android.glance.tools.preview.GlancePreviewActivity
 
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
 class SamplePreviewActivity : GlancePreviewActivity() {
 
     private var counter = 0L
+
+    override fun getProviders() = listOf(
+        SampleGlanceWidgetReceiver::class.java,
+        SampleAppWidgetReceiver::class.java
+    )
+
+    override suspend fun getGlancePreview(
+        receiver: Class<out GlanceAppWidgetReceiver>
+    ): GlancePreview {
+        return when (receiver) {
+            SampleGlanceWidgetReceiver::class.java -> GlancePreview(
+                instance = SampleGlanceWidget,
+                state = mutablePreferencesOf(
+                    SampleGlanceWidget.countKey to counter++
+                )
+            )
+            else -> throw IllegalArgumentException()
+        }
+    }
 
     /**
      * To support non-glance widgets we can override this method and provide the RemoteViews directly
@@ -42,27 +61,4 @@ class SamplePreviewActivity : GlancePreviewActivity() {
             else -> super.getAppWidgetPreview(info, size)
         }
     }
-
-    override suspend fun getGlancePreview(
-        receiver: Class<out GlanceAppWidgetReceiver>
-    ): GlanceAppWidget {
-        return when (receiver) {
-            SampleGlanceWidgetReceiver::class.java -> SampleGlanceWidget
-            else -> throw IllegalArgumentException()
-        }
-    }
-
-    override suspend fun getGlanceState(instance: GlanceAppWidget): Any {
-        return when (instance) {
-            is SampleGlanceWidget -> mutablePreferencesOf(
-                SampleGlanceWidget.countKey to counter++
-            )
-            else -> throw IllegalArgumentException()
-        }
-    }
-
-    override fun getProviders() = listOf(
-        SampleGlanceWidgetReceiver::class.java,
-        SampleAppWidgetReceiver::class.java
-    )
 }

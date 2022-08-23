@@ -17,7 +17,9 @@
 package com.google.android.glance.appwidget.host
 
 import android.appwidget.AppWidgetHostView
-import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProviderInfo
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.widget.RemoteViews
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -50,13 +52,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import java.util.concurrent.Executors
 
 /**
  * State for the [AppWidgetHost] that holds the host view and allows to update the appwidget.
  *
  * @see AppWidgetHost
  */
-class AppWidgetHostState(private val state: MutableState<AppWidgetHostView?>) {
+class AppWidgetHostState(
+    val providerInfo: AppWidgetProviderInfo?,
+    private val state: MutableState<AppWidgetHostView?>
+) {
 
     /**
      * The current [AppWidgetHostView] instance or null if not laid out yet.
@@ -83,8 +89,8 @@ class AppWidgetHostState(private val state: MutableState<AppWidgetHostView?>) {
 }
 
 @Composable
-fun rememberAppWidgetHost(key: Any? = null) = remember(key) {
-    AppWidgetHostState(mutableStateOf(null))
+fun rememberAppWidgetHost(providerInfo: AppWidgetProviderInfo? = null) = remember(providerInfo) {
+    AppWidgetHostState(providerInfo, mutableStateOf(null))
 }
 
 /**
@@ -124,7 +130,11 @@ fun AppWidgetHost(
 
             AndroidView(
                 factory = { context ->
-                    AppWidgetHostView(context)
+                    AppWidgetHostView(context).apply {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            setExecutor(Executors.newSingleThreadExecutor())
+                        }
+                    }
                 },
                 modifier = hostModifier.clip(
                     RoundedCornerShape(
@@ -133,19 +143,46 @@ fun AppWidgetHost(
                 ),
                 update = { hostView ->
                     if (hostView != state.value) {
-                        // The hostView requires an AppWidgetProviderInfo to work in certain
-                        // OS versions. Take the first one even if it's not the right one.
-                        with(hostView) {
-                            val info = AppWidgetManager.getInstance(context)
-                                .installedProviders.firstOrNull()
-                            setAppWidget(1, info)
-                            setPadding(0, 0, 0, 0)
+                        if (state.providerInfo != null) {
+                            hostView.setAppWidget(1, state.providerInfo)
+                            hostView.setPadding(0, 0, 0, 0)
+                        } else {
+                            // When no provider is provided, use a fake provider workaround to init the host
+                            hostView.setFakeAppWidget()
                         }
                     }
                     state.value = hostView
                 }
             )
         }
+    }
+}
+
+/**
+ * The hostView requires an AppWidgetProviderInfo to work in certain OS versions. This method uses
+ * reflection to set a fake provider info.
+ */
+private fun AppWidgetHostView.setFakeAppWidget() {
+    val context = context
+    val info = AppWidgetProviderInfo()
+    try {
+        val activityInfo = ActivityInfo().apply {
+            applicationInfo = context.applicationInfo
+            packageName = context.packageName
+            labelRes = applicationInfo.labelRes
+        }
+
+        info::class.java.getDeclaredField("providerInfo").run {
+            isAccessible = true
+            set(info, activityInfo)
+        }
+
+        this::class.java.getDeclaredField("mInfo").apply {
+            isAccessible = true
+            set(this@setFakeAppWidget, info)
+        }
+    } catch (e: Exception) {
+        throw IllegalStateException("Couldn't not set fake provider", e)
     }
 }
 

@@ -68,16 +68,12 @@ class MyWidgetPreviewActivity : GlancePreviewActivity() {
 
     override suspend fun getGlancePreview(
         receiver: Class<out GlanceAppWidgetReceiver>
-    ): GlanceAppWidget {
+    ): GlancePreview {
         return when (receiver) {
-            MyGlanceWidgetReceiver::class.java -> MyGlanceWidget()
-            else -> throw IllegalArgumentException()
-        }
-    }
-
-    override suspend fun getGlanceState(instance: GlanceAppWidget): Any {
-        return when (instance) {
-            is MyGlanceWidget -> mutablePreferencesOf(intPreferencesKey("state") to value)
+            MyGlanceWidgetReceiver::class.java -> GlancePreview(
+                instance = MyGlanceWidget(), 
+                state = mutablePreferencesOf(intPreferencesKey("state") to value)
+            )
             else -> throw IllegalArgumentException()
         }
     }
