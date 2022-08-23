@@ -7,18 +7,17 @@ package com.google.android.glance.appwidget.configuration {
   }
 
   public final class AppWidgetConfigurationState {
-    ctor public AppWidgetConfigurationState(androidx.glance.appwidget.GlanceAppWidget instance, android.app.Activity activity);
+    ctor public AppWidgetConfigurationState(Object? state, androidx.glance.GlanceId? glanceId, android.appwidget.AppWidgetProviderInfo? providerInfo, androidx.glance.appwidget.GlanceAppWidget instance, android.app.Activity activity);
     method public suspend Object? applyConfiguration(kotlin.coroutines.Continuation<? super kotlin.Unit> p);
     method public void discardConfiguration();
     method public inline <reified T> T! getCurrentState();
     method public androidx.glance.GlanceId? getGlanceId();
     method public androidx.glance.appwidget.GlanceAppWidget getInstance();
-    method public Object? getState();
-    method public void setState(Object? state);
+    method public android.appwidget.AppWidgetProviderInfo? getProviderInfo();
     method public inline <reified T> void updateCurrentState(kotlin.jvm.functions.Function1<? super T,? extends T> update);
     property public final androidx.glance.GlanceId? glanceId;
     property public final androidx.glance.appwidget.GlanceAppWidget instance;
-    property public final Object? state;
+    property public final android.appwidget.AppWidgetProviderInfo? providerInfo;
   }
 
 }

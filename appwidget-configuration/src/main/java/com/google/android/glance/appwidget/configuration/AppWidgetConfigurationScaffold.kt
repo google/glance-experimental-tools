@@ -17,6 +17,8 @@
 package com.google.android.glance.appwidget.configuration
 
 import android.app.Activity
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProviderInfo
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -71,6 +73,7 @@ import com.google.android.glance.appwidget.host.rememberAppWidgetHost
 class AppWidgetConfigurationState(
     state: Any?,
     val glanceId: GlanceId?,
+    val providerInfo: AppWidgetProviderInfo?,
     val instance: GlanceAppWidget,
     private val activity: Activity
 ) {
@@ -161,12 +164,22 @@ fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget):
         // Set the result to canceled in case the configuration does not finish
         setResult(Activity.RESULT_CANCELED)
     }
+    val glanceAppWidgetManager = GlanceAppWidgetManager(activity)
     val glanceId = remember(activity) {
-        GlanceAppWidgetManager(activity).getGlanceIdBy(activity.intent)
+        glanceAppWidgetManager.getGlanceIdBy(activity.intent)
+    }
+    val providerInfo: AppWidgetProviderInfo? = remember(glanceId) {
+        if (glanceId != null) {
+            val appWidgetId = glanceAppWidgetManager.getAppWidgetId(glanceId)
+            AppWidgetManager.getInstance(activity).getAppWidgetInfo(appWidgetId)
+        } else {
+            null
+        }
     }
     val initialValue = AppWidgetConfigurationState(
         state = null,
         glanceId = glanceId,
+        providerInfo = providerInfo,
         instance = configurationInstance,
         activity = activity
     )
@@ -179,6 +192,7 @@ fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget):
                 glanceId = glanceId
             ),
             glanceId = glanceId,
+            providerInfo = providerInfo,
             instance = configurationInstance,
             activity = activity
         )
@@ -240,7 +254,7 @@ fun AppWidgetConfigurationScaffold(
     val remoteViews = remember {
         GlanceRemoteViews()
     }
-    val previewState = rememberAppWidgetHost()
+    val previewState = rememberAppWidgetHost(appWidgetConfigurationState.providerInfo)
 
     // If no display size specified get the launcher available size
     if (displaySize == DpSize.Unspecified && glanceId != null) {

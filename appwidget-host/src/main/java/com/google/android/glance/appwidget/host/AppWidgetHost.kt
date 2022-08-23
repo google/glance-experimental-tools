@@ -59,7 +59,10 @@ import java.util.concurrent.Executors
  *
  * @see AppWidgetHost
  */
-class AppWidgetHostState(private val state: MutableState<AppWidgetHostView?>) {
+class AppWidgetHostState(
+    val providerInfo: AppWidgetProviderInfo?,
+    private val state: MutableState<AppWidgetHostView?>
+) {
 
     /**
      * The current [AppWidgetHostView] instance or null if not laid out yet.
@@ -86,8 +89,8 @@ class AppWidgetHostState(private val state: MutableState<AppWidgetHostView?>) {
 }
 
 @Composable
-fun rememberAppWidgetHost(key: Any? = null) = remember(key) {
-    AppWidgetHostState(mutableStateOf(null))
+fun rememberAppWidgetHost(providerInfo: AppWidgetProviderInfo? = null) = remember(providerInfo) {
+    AppWidgetHostState(providerInfo, mutableStateOf(null))
 }
 
 /**
@@ -140,7 +143,13 @@ fun AppWidgetHost(
                 ),
                 update = { hostView ->
                     if (hostView != state.value) {
-                        hostView.init()
+                        if (state.providerInfo != null) {
+                            hostView.setAppWidget(1, state.providerInfo)
+                            hostView.setPadding(0, 0, 0, 0)
+                        } else {
+                            // When no provider is provided, use a fake provider workaround to init the host
+                            hostView.setFakeAppWidget()
+                        }
                     }
                     state.value = hostView
                 }
@@ -153,7 +162,7 @@ fun AppWidgetHost(
  * The hostView requires an AppWidgetProviderInfo to work in certain OS versions. This method uses
  * reflection to set a fake provider info.
  */
-private fun AppWidgetHostView.init() {
+private fun AppWidgetHostView.setFakeAppWidget() {
     val context = context
     val info = AppWidgetProviderInfo()
     try {
@@ -170,10 +179,9 @@ private fun AppWidgetHostView.init() {
 
         this::class.java.getDeclaredField("mInfo").apply {
             isAccessible = true
-            set(this@init, info)
+            set(this@setFakeAppWidget, info)
         }
     } catch (e: Exception) {
-        // TODO consider if we try a fallback method like setting any provider if the app has
         throw IllegalStateException("Couldn't not set fake provider", e)
     }
 }
