@@ -17,7 +17,6 @@
 package com.google.android.glance.appwidget.configuration
 
 import android.app.Activity
-import android.appwidget.AppWidgetManager
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -42,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -63,33 +63,20 @@ import com.google.android.glance.appwidget.host.rememberAppWidgetHost
 
 /**
  * Use to manage the [AppWidgetConfigurationScaffold] state.
+ *
+ * @param glanceId The [GlanceId] obtained from the intent that launched the given activity
+ * @param instance
+ * @param state Current state for the configuration. Use [getCurrentState] and [updateCurrentState] instead.
  */
-class AppWidgetConfigurationState(val instance: GlanceAppWidget, private val activity: Activity) {
+class AppWidgetConfigurationState(
+    state: Any?,
+    val glanceId: GlanceId?,
+    val instance: GlanceAppWidget,
+    private val activity: Activity
+) {
 
-    /**
-     * The [GlanceId] obtained from the intent that launched the given activity
-     *
-     * @see AppWidgetManager.EXTRA_APPWIDGET_ID
-     * @see GlanceAppWidgetManager.getGlanceIdBy
-     */
-    var glanceId: GlanceId? by mutableStateOf(null)
-        internal set
-
-    /**
-     * Current state for the configuration. Use [getCurrentState] and [updateCurrentState] instead.
-     */
-    var state: Any? by mutableStateOf(instance)
-
-    init {
-        glanceId = GlanceAppWidgetManager(activity).getGlanceIdBy(activity.intent)
-
-        // Set the result to canceled
-        activity.setResult(Activity.RESULT_CANCELED)
-        if (glanceId == null) {
-            // invalid invocation of the configuration activity, skip.
-            activity.finish()
-        }
-    }
+    @PublishedApi
+    internal var internalState: Any? by mutableStateOf(state)
 
     /**
      * Retrieve the current state of the given [GlanceAppWidget] instance
@@ -101,7 +88,7 @@ class AppWidgetConfigurationState(val instance: GlanceAppWidget, private val act
      *
      * @see updateCurrentState
      */
-    inline fun <reified T> getCurrentState(): T? = state as? T
+    inline fun <reified T> getCurrentState(): T? = internalState as? T
 
     /**
      * Updates the [GlanceAppWidget] state for the configuration preview without modifying the
@@ -115,8 +102,8 @@ class AppWidgetConfigurationState(val instance: GlanceAppWidget, private val act
      * @see androidx.glance.appwidget.state.updateAppWidgetState
      */
     inline fun <reified T> updateCurrentState(update: (T) -> T) {
-        requireNotNull(state)
-        state = update(state as T)
+        requireNotNull(internalState)
+        internalState = update(internalState as T)
     }
 
     /**
@@ -127,16 +114,20 @@ class AppWidgetConfigurationState(val instance: GlanceAppWidget, private val act
      * [GlanceAppWidget.stateDefinition] and calls [GlanceAppWidget.update].
      */
     suspend fun applyConfiguration() {
+        checkNotNull(glanceId) { "Cannot apply configuration in a null GlanceId" }
+
+        // Set result ok to tell the launcher the configuration was a success
         activity.setResult(Activity.RESULT_OK, activity.intent)
+
         @Suppress("UNCHECKED_CAST")
         updateAppWidgetState(
             activity,
             instance.stateDefinition as GlanceStateDefinition<Any?>,
-            glanceId!!
+            glanceId
         ) {
-            state
+            internalState
         }
-        instance.update(activity, glanceId!!)
+        instance.update(activity, glanceId)
         activity.finish()
     }
 
@@ -166,10 +157,32 @@ class AppWidgetConfigurationState(val instance: GlanceAppWidget, private val act
  */
 @Composable
 fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget): AppWidgetConfigurationState {
-    val activity = LocalContext.current as Activity
-    return remember(configurationInstance) {
-        AppWidgetConfigurationState(configurationInstance, activity)
+    val activity = (LocalContext.current as Activity).apply {
+        // Set the result to canceled in case the configuration does not finish
+        setResult(Activity.RESULT_CANCELED)
     }
+    val glanceId = remember(activity) {
+        GlanceAppWidgetManager(activity).getGlanceIdBy(activity.intent)
+    }
+    val initialValue = AppWidgetConfigurationState(
+        state = null,
+        glanceId = glanceId,
+        instance = configurationInstance,
+        activity = activity
+    )
+    return produceState(initialValue = initialValue, configurationInstance) {
+        if (glanceId == null) return@produceState
+        value = AppWidgetConfigurationState(
+            state = getAppWidgetState(
+                context = activity,
+                definition = configurationInstance.stateDefinition as GlanceStateDefinition<*>,
+                glanceId = glanceId
+            ),
+            glanceId = glanceId,
+            instance = configurationInstance,
+            activity = activity
+        )
+    }.value
 }
 
 /**
@@ -218,23 +231,19 @@ fun AppWidgetConfigurationScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     val context = LocalContext.current
-    val glanceId = appWidgetConfigurationState.glanceId ?: return
-
-    LaunchedEffect(glanceId) {
-        appWidgetConfigurationState.state = getAppWidgetState(
-            context = context,
-            definition = appWidgetConfigurationState.instance.stateDefinition as GlanceStateDefinition<*>,
-            glanceId = glanceId
-        )
-    }
-
+    val glanceId = appWidgetConfigurationState.glanceId
+    val currentState = appWidgetConfigurationState.getCurrentState<Any?>()
     val orientation = LocalConfiguration.current.orientation
     var widgetSize by remember {
         mutableStateOf(displaySize)
     }
+    val remoteViews = remember {
+        GlanceRemoteViews()
+    }
+    val previewState = rememberAppWidgetHost()
 
     // If no display size specified get the launcher available size
-    if (displaySize == DpSize.Unspecified) {
+    if (displaySize == DpSize.Unspecified && glanceId != null) {
         LaunchedEffect(widgetSize, glanceId, orientation) {
             val sizes = GlanceAppWidgetManager(context).getAppWidgetSizes(glanceId)
             widgetSize = when (orientation) {
@@ -249,15 +258,10 @@ fun AppWidgetConfigurationScaffold(
         }
     }
 
-    val remoteViews = remember {
-        GlanceRemoteViews()
-    }
-    val previewState = rememberAppWidgetHost()
-
-    if (previewState.isReady && widgetSize != DpSize.Unspecified) {
+    if (previewState.isReady && widgetSize != DpSize.Unspecified && currentState != null) {
         LaunchedEffect(
             previewState,
-            appWidgetConfigurationState.state,
+            currentState,
             appWidgetConfigurationState.instance,
             widgetSize
         ) {
@@ -265,7 +269,7 @@ fun AppWidgetConfigurationScaffold(
                 remoteViews.compose(
                     context = context,
                     size = widgetSize,
-                    state = appWidgetConfigurationState.state,
+                    state = currentState,
                     content = {
                         appWidgetConfigurationState.instance.Content()
                     }

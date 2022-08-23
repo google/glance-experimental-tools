@@ -46,8 +46,14 @@ and provide the configuration state with the `GlanceAppWidget` instance to use f
 ```kotlin
 @Composable
 private fun ConfigurationScreen() {
-    val configurationState = rememberAppWidgetConfigurationState(SampleGlanceWidget)
     val scope = rememberCoroutineScope()
+    val configurationState = rememberAppWidgetConfigurationState(SampleGlanceWidget)
+
+    // If we don't have a valid id, discard configuration and finish the activity.
+    if (configurationState.glanceId == null) {
+        configurationState.discardConfiguration()
+        return
+    }
 
     AppWidgetConfigurationScaffold(
         appWidgetConfigurationState = configurationState,
