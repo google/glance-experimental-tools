@@ -2,8 +2,7 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.google.android.glance.tools/appwidget-host)](https://search.maven.org/search?q=g:com.google.android.glance.tools)
 
-A simple composable to display RemoteViews inside your app, together with some AppWidget sizing
-utilities.
+A simple composable to display RemoteViews inside your app or to create `@Preview`s
 
 > Note: This library is used by the appwidget-preview and appwidget-configuration modules and does
 > not depend on Glance-appwidget
@@ -16,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    // or debugImplementation if only used for previews
     implementation "com.google.android.glance.tools:appwidget-host:<version>"
 }
 ```
@@ -43,6 +43,43 @@ fun MyScreen(provider: AppWidgetProviderInfo) {
     )
 }
 ```
+
+### Use for Previews
+
+The `AppWidgetHostPreview` enables [Jetpack Compose Live Previews](https://developer.android.com/jetpack/compose/tooling)
+by creating a `@Preview`composable and running it in a device. Together with
+[Live Edits](https://developer.android.com/jetpack/compose/tooling#live-edit)
+you can get a "hot-reload" experience. 
+
+Note: while the preview will render in Android Studio, the RemoteViews won't. You must always run
+it in a device.
+
+When using Glance-appwidgets you can use the experimental API `GlanceRemoteViews` to generate the
+RemoteViews to use for the preview
+
+```kotlin
+@Preview
+@Composable
+fun MyGlancePreview() {
+    // Helper class to trigger composition in a Glance composable
+    val remoteViews = GlanceRemoteViews()
+    // The size of the widget
+    val displaySize = DpSize(200.dp, 200.dp)
+    // Provide a state depending on the GlanceAppWidget state definition
+    val state = preferencesOf(counterKey to 2)
+    
+    AppWidgetHostPreview(
+        modifier = Modifier.fillMaxSize(),
+        displaySize = displaySize
+    ) { context ->
+        remoteViews.compose(context, displaySize, state) {
+            MyGlanceContent() // Call the glance composable
+        }.remoteViews
+    }
+}
+```
+
+Important: don't forget to setup the compose-tooling as explained [here](https://developer.android.com/jetpack/compose/tooling)
 
 ## Snapshots
 

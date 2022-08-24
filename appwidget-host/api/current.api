@@ -17,6 +17,10 @@ package com.google.android.glance.appwidget.host {
     property public final android.appwidget.AppWidgetHostView? value;
   }
 
+  public final class AppWidgetPreviewKt {
+    method @androidx.compose.runtime.Composable public static void AppWidgetHostPreview(optional androidx.compose.ui.Modifier modifier, optional long displaySize, optional android.appwidget.AppWidgetProviderInfo? provider, kotlin.jvm.functions.Function2<? super android.content.Context,? super kotlin.coroutines.Continuation<? super android.widget.RemoteViews>,?> content);
+  }
+
   public final class AppWidgetSizeUtilsKt {
     method public static float getAppwidgetBackgroundRadius(android.content.Context);
     method public static float getAppwidgetBackgroundRadiusPixels(android.content.Context);
