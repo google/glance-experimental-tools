@@ -28,7 +28,7 @@ import com.google.android.glance.tools.preview.GlancePreviewActivity
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
 class SamplePreviewActivity : GlancePreviewActivity() {
 
-    private var counter = 0L
+    private var counter = 0
 
     override fun getProviders() = listOf(
         SampleGlanceWidgetReceiver::class.java,
