@@ -69,7 +69,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.google.android.glance.appwidget.host.AppWidgetHost
 import com.google.android.glance.appwidget.host.AppWidgetHostState
-import com.google.android.glance.appwidget.host.rememberAppWidgetHost
+import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -91,7 +91,7 @@ internal fun PreviewScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var previewPanelState by remember { mutableStateOf(PreviewPanel.Resize) }
-    val previewHostState = rememberAppWidgetHost(selectedProvider)
+    val previewHostState = rememberAppWidgetHostState(selectedProvider)
 
     if (previewHostState.isReady) {
         LaunchedEffect(previewHostState.value) {

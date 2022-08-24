@@ -89,7 +89,7 @@ class AppWidgetHostState(
 }
 
 @Composable
-fun rememberAppWidgetHost(providerInfo: AppWidgetProviderInfo? = null) = remember(providerInfo) {
+fun rememberAppWidgetHostState(providerInfo: AppWidgetProviderInfo? = null) = remember(providerInfo) {
     AppWidgetHostState(providerInfo, mutableStateOf(null))
 }
 
@@ -119,42 +119,44 @@ fun AppWidgetHost(
             )
         }
 
-        if (displaySize != DpSize.Unspecified) {
-            val hostModifier = Modifier.size(displaySize).run {
-                if (gridColor != null) {
-                    dashedBorder(1.dp, 1.dp, gridColor)
-                } else {
-                    this
-                }
+        val hostModifier = if (displaySize != DpSize.Unspecified) {
+            Modifier.size(displaySize)
+        } else {
+            Modifier.fillMaxSize()
+        }.run {
+            if (gridColor != null) {
+                dashedBorder(1.dp, 1.dp, gridColor)
+            } else {
+                this
             }
-
-            AndroidView(
-                factory = { context ->
-                    AppWidgetHostView(context).apply {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            setExecutor(Executors.newSingleThreadExecutor())
-                        }
-                    }
-                },
-                modifier = hostModifier.clip(
-                    RoundedCornerShape(
-                        CornerSize(LocalContext.current.appwidgetBackgroundRadius)
-                    )
-                ),
-                update = { hostView ->
-                    if (hostView != state.value) {
-                        if (state.providerInfo != null) {
-                            hostView.setAppWidget(1, state.providerInfo)
-                            hostView.setPadding(0, 0, 0, 0)
-                        } else {
-                            // When no provider is provided, use a fake provider workaround to init the host
-                            hostView.setFakeAppWidget()
-                        }
-                    }
-                    state.value = hostView
-                }
-            )
         }
+
+        AndroidView(
+            factory = { context ->
+                AppWidgetHostView(context).apply {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        setExecutor(Executors.newSingleThreadExecutor())
+                    }
+                }
+            },
+            modifier = hostModifier.clip(
+                RoundedCornerShape(
+                    CornerSize(LocalContext.current.appwidgetBackgroundRadius)
+                )
+            ),
+            update = { hostView ->
+                if (hostView != state.value) {
+                    if (state.providerInfo != null) {
+                        hostView.setAppWidget(1, state.providerInfo)
+                        hostView.setPadding(0, 0, 0, 0)
+                    } else {
+                        // When no provider is provided, use a fake provider workaround to init the host
+                        hostView.setFakeAppWidget()
+                    }
+                }
+                state.value = hostView
+            }
+        )
     }
 }
 

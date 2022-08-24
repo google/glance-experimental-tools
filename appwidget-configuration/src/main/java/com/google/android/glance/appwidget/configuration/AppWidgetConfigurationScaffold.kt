@@ -61,7 +61,7 @@ import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.GlanceStateDefinition
 import com.google.android.glance.appwidget.host.AppWidgetHost
-import com.google.android.glance.appwidget.host.rememberAppWidgetHost
+import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
 
 /**
  * Use to manage the [AppWidgetConfigurationScaffold] state.
@@ -254,7 +254,7 @@ fun AppWidgetConfigurationScaffold(
     val remoteViews = remember {
         GlanceRemoteViews()
     }
-    val previewState = rememberAppWidgetHost(appWidgetConfigurationState.providerInfo)
+    val previewState = rememberAppWidgetHostState(appWidgetConfigurationState.providerInfo)
 
     // If no display size specified get the launcher available size
     if (displaySize == DpSize.Unspecified && glanceId != null) {
