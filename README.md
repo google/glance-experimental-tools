@@ -1,6 +1,6 @@
 # Glance Experimental Tools
 
-> 🚧 Work in-progress: artifacts not available yet
+> 🚧 Work in-progress: this library is under heavy development, APIs might change frequently
 
 This project aims to supplement Jetpack Glance with features that are commonly required by developers
 but not yet available.
