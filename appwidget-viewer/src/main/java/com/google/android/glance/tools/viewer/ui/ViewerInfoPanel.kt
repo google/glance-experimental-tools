@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.viewer.internal.ui
+package com.google.android.glance.tools.viewer.ui
 
 import android.appwidget.AppWidgetProviderInfo
 import android.os.Build

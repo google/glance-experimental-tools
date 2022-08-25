@@ -26,7 +26,7 @@ package com.google.android.glance.tools.viewer {
 
 }
 
-package com.google.android.glance.tools.viewer.internal.ui {
+package com.google.android.glance.tools.viewer.ui {
 
   public final class ViewerInfoPanelKt {
   }
@@ -39,7 +39,7 @@ package com.google.android.glance.tools.viewer.internal.ui {
 
 }
 
-package com.google.android.glance.tools.viewer.internal.ui.theme {
+package com.google.android.glance.tools.viewer.ui.theme {
 
   public final class ColorKt {
   }
