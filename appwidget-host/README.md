@@ -2,10 +2,13 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.google.android.glance.tools/appwidget-host)](https://search.maven.org/search?q=g:com.google.android.glance.tools)
 
-A simple composable to display RemoteViews inside your app or to create `@Preview`s
+A simple composable to display RemoteViews inside your app or to create `@Preview`s that together 
+with Compose and [Live Edits](https://developer.android.com/jetpack/compose/tooling#live-edit)
+enables, [in most situations](https://developer.android.com/studio/run#limitations), a hot-reload
+mechanism, reflecting changes nearly instantaneously.
 
-> Note: This library is used by the appwidget-preview and appwidget-configuration modules and does
-> not depend on Glance-appwidget
+> Note: This library is used by the appwidget-viewer and appwidget-configuration modules and is
+> independent from Glance-appwidget
 
 ## Setup
 
@@ -47,9 +50,7 @@ fun MyScreen(provider: AppWidgetProviderInfo) {
 ### Use for Previews
 
 The `AppWidgetHostPreview` enables [Jetpack Compose Live Previews](https://developer.android.com/jetpack/compose/tooling)
-by creating a `@Preview`composable and running it in a device. Together with
-[Live Edits](https://developer.android.com/jetpack/compose/tooling#live-edit)
-you can get a "hot-reload" experience. 
+by creating a `@Preview`composable and running it in a device.
 
 Note: while the preview will render in Android Studio, the RemoteViews won't. You must always run
 it in a device.

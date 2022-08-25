@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.preview
+package com.google.android.glance.tools.viewer
 
 import android.appwidget.AppWidgetProvider
 import android.appwidget.AppWidgetProviderInfo
@@ -40,9 +40,9 @@ import androidx.glance.appwidget.SizeMode
 import com.google.android.glance.appwidget.host.getSingleSize
 import com.google.android.glance.appwidget.host.getTargetSize
 import com.google.android.glance.appwidget.host.toSizeF
-import com.google.android.glance.tools.preview.internal.AppWidgetPreviewManager
-import com.google.android.glance.tools.preview.internal.ui.PreviewScreen
-import com.google.android.glance.tools.preview.internal.ui.theme.PreviewTheme
+import com.google.android.glance.tools.viewer.internal.AppWidgetViewerManager
+import com.google.android.glance.tools.viewer.internal.ui.ViewerScreen
+import com.google.android.glance.tools.viewer.internal.ui.theme.ViewerTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -51,24 +51,24 @@ import kotlinx.coroutines.withContext
 import kotlin.math.ceil
 
 /**
- * Base class to display preview of AppWidgets.
+ * Base class to display AppWidgets.
  */
-abstract class AppWidgetPreviewActivity : ComponentActivity() {
+abstract class AppWidgetViewerActivity : ComponentActivity() {
 
     /**
-     * The list of [AppWidgetProvider] to display previews
+     * The list of [AppWidgetProvider] to display in the viewer
      */
     abstract fun getProviders(): List<Class<out AppWidgetProvider>>
 
     /**
-     * Provides the [RemoteViews] preview of the given [AppWidgetProviderInfo] for the given size
+     * Provides the [RemoteViews] snapshot of the given [AppWidgetProviderInfo] for the given size
      *
      * @param - The [AppWidgetProviderInfo] containing the metadata of the appwidget
      * @param - The available size to display the appwidget
      *
-     * @return the [RemoteViews] instance to use for the preview.
+     * @return the [RemoteViews] instance to use for the viewer.
      */
-    abstract suspend fun getAppWidgetPreview(
+    abstract suspend fun getAppWidgetSnapshot(
         info: AppWidgetProviderInfo,
         size: DpSize
     ): RemoteViews
@@ -80,24 +80,24 @@ abstract class AppWidgetPreviewActivity : ComponentActivity() {
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val previewManager = AppWidgetPreviewManager(this, getProviders())
-        val providers = previewManager.getProvidersInfo()
+        val viewerManager = AppWidgetViewerManager(this, getProviders())
+        val providers = viewerManager.getProvidersInfo()
         selectedProvider = mutableStateOf(providers.first())
         currentSize = mutableStateOf(selectedProvider.value.getTargetSize(this))
 
         setContent {
-            PreviewTheme {
+            ViewerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PreviewScreen(
+                    ViewerScreen(
                         providers = providers,
                         selectedProvider = selectedProvider.value,
                         currentSize = currentSize.value,
-                        preview = ::getAppWidgetPreview,
-                        exportPreview = {
-                            previewManager.exportPreview(
+                        snapshot = ::getAppWidgetSnapshot,
+                        exportSnapshot = {
+                            viewerManager.exportSnapshot(
                                 selectedProvider.value,
                                 it
                             )
@@ -105,9 +105,9 @@ abstract class AppWidgetPreviewActivity : ComponentActivity() {
                         onResize = { currentSize.value = it },
                         onSelected = { selectedProvider.value = it },
                         onPin = { providerInfo ->
-                            previewManager.requestPin(
+                            viewerManager.requestPin(
                                 providerInfo,
-                                getAppWidgetPreview(
+                                getAppWidgetSnapshot(
                                     info = providerInfo,
                                     size = providerInfo.getTargetSize(this)
                                 )
@@ -121,28 +121,28 @@ abstract class AppWidgetPreviewActivity : ComponentActivity() {
 }
 
 /**
- * Extend this activity to provide a set of GlanceAppWidget previews to display.
+ * Extend this activity to provide a set of GlanceAppWidget snapshots to display.
  */
 @ExperimentalGlanceRemoteViewsApi
-abstract class GlancePreviewActivity : AppWidgetPreviewActivity() {
+abstract class GlanceViewerActivity : AppWidgetViewerActivity() {
 
     private val glanceRemoteViews = GlanceRemoteViews()
 
     /**
-     * Provides an instance of [GlanceAppWidget] to display inside the preview.
+     * Provides an instance of [GlanceAppWidget] to display inside the viewer.
      *
-     * @param receiver - The selected [GlanceAppWidgetReceiver] to display a preview
+     * @param receiver - The selected [GlanceAppWidgetReceiver] to display
      */
-    abstract suspend fun getGlancePreview(receiver: Class<out GlanceAppWidgetReceiver>): GlancePreview
+    abstract suspend fun getGlanceSnapshot(receiver: Class<out GlanceAppWidgetReceiver>): GlanceSnapshot
 
     /**
      * Only override this method to directly provide [RemoteViews] instead of [GlanceAppWidget]
      * instances.
      *
-     * @see AppWidgetPreviewActivity.getAppWidgetPreview
+     * @see AppWidgetViewerActivity.getAppWidgetSnapshot
      */
     @Suppress("UNCHECKED_CAST")
-    override suspend fun getAppWidgetPreview(
+    override suspend fun getAppWidgetSnapshot(
         info: AppWidgetProviderInfo,
         size: DpSize
     ): RemoteViews = withContext(Dispatchers.IO) {
@@ -152,8 +152,8 @@ abstract class GlancePreviewActivity : AppWidgetPreviewActivity() {
         }
 
         val receiverClass = receiver as Class<out GlanceAppWidgetReceiver>
-        val preview = getGlancePreview(receiverClass)
-        preview.instance.asRemoteViews(preview.state, info, size)
+        val snapshot = getGlanceSnapshot(receiverClass)
+        snapshot.instance.asRemoteViews(snapshot.state, info, size)
     }
 
     private suspend fun GlanceAppWidget.asRemoteViews(

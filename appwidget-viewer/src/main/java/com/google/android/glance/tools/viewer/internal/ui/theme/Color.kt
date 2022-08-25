@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.preview
+package com.google.android.glance.tools.viewer.internal.ui.theme
 
-import androidx.glance.appwidget.GlanceAppWidget
+import androidx.compose.ui.graphics.Color
 
-/**
- * Data class that contains the instance to use for the preview and the associated state as defined
- * by the [GlanceAppWidget.stateDefinition] of the instance.
- */
-data class GlancePreview(val instance: GlanceAppWidget, val state: Any? = null)
+internal val Purple80 = Color(0xFFD0BCFF)
+internal val PurpleGrey80 = Color(0xFFCCC2DC)
+internal val Pink80 = Color(0xFFEFB8C8)
+
+internal val Purple40 = Color(0xFF6650a4)
+internal val PurpleGrey40 = Color(0xFF625b71)
+internal val Pink40 = Color(0xFF7D5260)

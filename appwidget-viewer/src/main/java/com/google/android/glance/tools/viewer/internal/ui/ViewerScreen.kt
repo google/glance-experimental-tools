@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.preview.internal.ui
+package com.google.android.glance.tools.viewer.internal.ui
 
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetProviderInfo
@@ -75,12 +75,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-internal fun PreviewScreen(
+internal fun ViewerScreen(
     providers: List<AppWidgetProviderInfo>,
     selectedProvider: AppWidgetProviderInfo,
     currentSize: DpSize,
-    preview: suspend (AppWidgetProviderInfo, DpSize) -> RemoteViews,
-    exportPreview: suspend (AppWidgetHostView) -> Result<Uri>,
+    snapshot: suspend (AppWidgetProviderInfo, DpSize) -> RemoteViews,
+    exportSnapshot: suspend (AppWidgetHostView) -> Result<Uri>,
     onResize: (DpSize) -> Unit,
     onSelected: (AppWidgetProviderInfo) -> Unit,
     onPin: suspend (AppWidgetProviderInfo) -> Boolean
@@ -90,27 +90,27 @@ internal fun PreviewScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    var previewPanelState by remember { mutableStateOf(PreviewPanel.Resize) }
-    val previewHostState = rememberAppWidgetHostState(selectedProvider)
+    var viewerPanelState by remember { mutableStateOf(ViewerPanel.Resize) }
+    val snapshotHostState = rememberAppWidgetHostState(selectedProvider)
 
-    if (previewHostState.isReady) {
-        LaunchedEffect(previewHostState.value) {
+    if (snapshotHostState.isReady) {
+        LaunchedEffect(snapshotHostState.value) {
             // Show first the initial layout
-            previewHostState.updateAppWidget(
+            snapshotHostState.updateAppWidget(
                 RemoteViews(context.packageName, selectedProvider.initialLayout)
             )
 
-            // Then request the actual preview
-            previewHostState.updateAppWidget(
-                preview(selectedProvider, currentSize)
+            // Then request the actual snapshot
+            snapshotHostState.updateAppWidget(
+                snapshot(selectedProvider, currentSize)
             )
         }
-        if (previewPanelState == PreviewPanel.Resize && bottomSheetState.isVisible) {
+        if (viewerPanelState == ViewerPanel.Resize && bottomSheetState.isVisible) {
             LaunchedEffect(currentSize) {
                 // If the user is in resizing mode debounce the updates by delaying them.
                 delay(500)
-                previewHostState.updateAppWidget(
-                    preview(selectedProvider, currentSize)
+                snapshotHostState.updateAppWidget(
+                    snapshot(selectedProvider, currentSize)
                 )
             }
         }
@@ -126,19 +126,19 @@ internal fun PreviewScreen(
             bottomEnd = CornerSize(0.dp)
         ),
         sheetContent = {
-            when (previewPanelState) {
-                PreviewPanel.Resize -> PreviewResizePanel(
+            when (viewerPanelState) {
+                ViewerPanel.Resize -> ViewerResizePanel(
                     currentSize = currentSize,
                     onSizeChange = onResize
                 )
-                PreviewPanel.Info -> PreviewInfoPanel(selectedProvider)
+                ViewerPanel.Info -> ViewerInfoPanel(selectedProvider)
             }
         }
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
-                PreviewDrawer(providers, selectedProvider, drawerState, onSelected)
+                ViewerDrawer(providers, selectedProvider, drawerState, onSelected)
             }
         ) {
             Scaffold(
@@ -148,18 +148,18 @@ internal fun PreviewScreen(
                 },
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 bottomBar = {
-                    PreviewBottomBar(
+                    ViewerBottomBar(
                         drawerState = drawerState,
-                        appWidgetHostState = previewHostState,
+                        appWidgetHostState = snapshotHostState,
                         onUpdate = {
                             scope.launch {
-                                previewHostState.updateAppWidget(
-                                    preview(selectedProvider, currentSize)
+                                snapshotHostState.updateAppWidget(
+                                    snapshot(selectedProvider, currentSize)
                                 )
                             }
                         },
                         onShowPanel = {
-                            previewPanelState = it
+                            viewerPanelState = it
                             scope.launch { bottomSheetState.show() }
                         },
                         onPin = {
@@ -178,8 +178,8 @@ internal fun PreviewScreen(
                                 doExport(
                                     context,
                                     snackbarHostState,
-                                    previewHostState,
-                                    exportPreview
+                                    snapshotHostState,
+                                    exportSnapshot
                                 )
                             }
                         }
@@ -192,7 +192,7 @@ internal fun PreviewScreen(
                         .padding(innerPadding)
                         .padding(24.dp),
                     displaySize = currentSize,
-                    state = previewHostState,
+                    state = snapshotHostState,
                     gridColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
                 )
             }
@@ -204,10 +204,10 @@ private suspend fun doExport(
     context: Context,
     snackbarHostState: SnackbarHostState,
     appWidgetHostState: AppWidgetHostState,
-    exportPreview: suspend (AppWidgetHostView) -> Result<Uri>
+    exportSnapshot: suspend (AppWidgetHostView) -> Result<Uri>
 ) {
     val host = appWidgetHostState.value ?: return
-    val uriResult = exportPreview(host)
+    val uriResult = exportSnapshot(host)
     if (uriResult.isFailure) {
         snackbarHostState.showSnackbar(
             message = uriResult.exceptionOrNull()?.message ?: "Something went wrong",
@@ -215,7 +215,7 @@ private suspend fun doExport(
         )
     } else {
         val result = snackbarHostState.showSnackbar(
-            message = "Preview stored in gallery",
+            message = "Snapshot stored in gallery",
             actionLabel = "View",
             withDismissAction = true
         )
@@ -230,11 +230,11 @@ private suspend fun doExport(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PreviewBottomBar(
+private fun ViewerBottomBar(
     drawerState: DrawerState,
     appWidgetHostState: AppWidgetHostState,
     onUpdate: () -> Unit,
-    onShowPanel: (PreviewPanel) -> Unit,
+    onShowPanel: (ViewerPanel) -> Unit,
     onPin: () -> Unit,
     onExport: () -> Unit
 ) {
@@ -258,7 +258,7 @@ private fun PreviewBottomBar(
             IconButton(
                 enabled = appWidgetHostState.isReady,
                 onClick = {
-                    onShowPanel(PreviewPanel.Resize)
+                    onShowPanel(ViewerPanel.Resize)
                 }
             ) {
                 Icon(
@@ -269,7 +269,7 @@ private fun PreviewBottomBar(
             IconButton(
                 enabled = appWidgetHostState.isReady,
                 onClick = {
-                    onShowPanel(PreviewPanel.Info)
+                    onShowPanel(ViewerPanel.Info)
                 }
             ) {
                 Icon(
@@ -308,7 +308,7 @@ private fun PreviewBottomBar(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Share,
-                    contentDescription = "Export preview"
+                    contentDescription = "Export current snapshot"
                 )
             }
         }
@@ -317,7 +317,7 @@ private fun PreviewBottomBar(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun PreviewDrawer(
+private fun ViewerDrawer(
     providers: List<AppWidgetProviderInfo>,
     selectedProvider: AppWidgetProviderInfo,
     drawerState: DrawerState,

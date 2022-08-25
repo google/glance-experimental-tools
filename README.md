@@ -12,13 +12,13 @@ experiment with new APIs and to gather insight into the development experience o
 
 ### 🧬️ [appwidget-host](./appwidget-host)
 
-A simple composable to display RemoteViews inside your app.
-
-### 🖼️ [appwidget-preview](./appwidget-preview)
-
-A debug tool to display AppWidget previews embedded inside the app and enable
+A simple composable to display RemoteViews inside your app or in `@Preview`s enabling
 "[Live Edits](https://developer.android.com/studio/run#live-edit)" or
 "[Apply Changes](https://developer.android.com/studio/run#apply-changes)".
+
+### 🖼️ [appwidget-viewer](./appwidget-viewer)
+
+A debug tool to view and interact with AppWidget snapshots embedded inside the app.  
 
 ### 🛠️🎨 [appwidget-configuration](./appwidget-configuration)
 

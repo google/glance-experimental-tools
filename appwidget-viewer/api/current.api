@@ -1,0 +1,54 @@
+// Signature format: 4.0
+package com.google.android.glance.tools.viewer {
+
+  public abstract class AppWidgetViewerActivity extends androidx.activity.ComponentActivity {
+    ctor public AppWidgetViewerActivity();
+    method public abstract suspend Object? getAppWidgetSnapshot(android.appwidget.AppWidgetProviderInfo info, long size, kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
+    method public abstract java.util.List<java.lang.Class<? extends android.appwidget.AppWidgetProvider>> getProviders();
+  }
+
+  public final class GlanceSnapshot {
+    ctor public GlanceSnapshot(androidx.glance.appwidget.GlanceAppWidget instance, optional Object? state);
+    method public androidx.glance.appwidget.GlanceAppWidget component1();
+    method public Object? component2();
+    method public com.google.android.glance.tools.viewer.GlanceSnapshot copy(androidx.glance.appwidget.GlanceAppWidget instance, Object? state);
+    method public androidx.glance.appwidget.GlanceAppWidget getInstance();
+    method public Object? getState();
+    property public final androidx.glance.appwidget.GlanceAppWidget instance;
+    property public final Object? state;
+  }
+
+  @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public abstract class GlanceViewerActivity extends com.google.android.glance.tools.viewer.AppWidgetViewerActivity {
+    ctor public GlanceViewerActivity();
+    method public suspend Object? getAppWidgetSnapshot(android.appwidget.AppWidgetProviderInfo info, long size, kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
+    method public abstract suspend Object? getGlanceSnapshot(Class<? extends androidx.glance.appwidget.GlanceAppWidgetReceiver> receiver, kotlin.coroutines.Continuation<? super com.google.android.glance.tools.viewer.GlanceSnapshot> p);
+  }
+
+}
+
+package com.google.android.glance.tools.viewer.internal.ui {
+
+  public final class ViewerInfoPanelKt {
+  }
+
+  public final class ViewerResizePanelKt {
+  }
+
+  public final class ViewerScreenKt {
+  }
+
+}
+
+package com.google.android.glance.tools.viewer.internal.ui.theme {
+
+  public final class ColorKt {
+  }
+
+  public final class ThemeKt {
+  }
+
+  public final class TypeKt {
+  }
+
+}
+
