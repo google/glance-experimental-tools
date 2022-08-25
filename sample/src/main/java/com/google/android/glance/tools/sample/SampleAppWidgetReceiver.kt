@@ -20,6 +20,13 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import com.google.android.glance.appwidget.host.AppWidgetHostPreview
 
 class SampleAppWidgetReceiver : AppWidgetProvider() {
 
@@ -39,5 +46,16 @@ object SampleAppWidget {
             context.packageName,
             R.layout.widget_sample
         )
+    }
+}
+
+@Preview
+@Composable
+fun SampleAppWidgetPreview() {
+    AppWidgetHostPreview(
+        modifier = Modifier.fillMaxSize(),
+        displaySize = DpSize(200.dp, 200.dp)
+    ) { context ->
+        SampleAppWidget.createWidget(context)
     }
 }

@@ -16,6 +16,7 @@
 
 package com.google.android.glance.appwidget.host
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
@@ -41,11 +42,16 @@ private const val SNAPSHOTS_FOLDER = "appwidget-snapshots"
 /**
  * Request the launcher to pin the current hosted appwidget if any.
  *
+ * @param target the provider component name or null to use the one defined in the host
+ * @param successCallback a PendingIntent to send when the launcher successfully placed the widget
  * @return true if request was successful, false otherwise
  *
  * @see AppWidgetManager.requestPinAppWidget
  */
-fun AppWidgetHostState.requestPin(target: ComponentName = value!!.appWidgetInfo.provider): Boolean {
+fun AppWidgetHostState.requestPin(
+    target: ComponentName = value!!.appWidgetInfo.provider,
+    successCallback: PendingIntent? = null
+): Boolean {
     val widgetManager = AppWidgetManager.getInstance(value!!.context)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && widgetManager.isRequestPinAppWidgetSupported) {
         val previewBundle = Bundle().apply {
@@ -53,7 +59,7 @@ fun AppWidgetHostState.requestPin(target: ComponentName = value!!.appWidgetInfo.
                 putParcelable(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW, snapshot)
             }
         }
-        return widgetManager.requestPinAppWidget(target, previewBundle, null)
+        return widgetManager.requestPinAppWidget(target, previewBundle, successCallback)
     }
     return false
 }

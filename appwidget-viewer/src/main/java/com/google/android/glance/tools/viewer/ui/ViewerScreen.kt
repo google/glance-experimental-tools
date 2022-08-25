@@ -16,11 +16,10 @@
 
 package com.google.android.glance.tools.viewer.ui
 
-import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.os.Build
 import android.widget.RemoteViews
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -69,6 +68,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.google.android.glance.appwidget.host.AppWidgetHost
 import com.google.android.glance.appwidget.host.AppWidgetHostState
+import com.google.android.glance.appwidget.host.exportSnapshot
 import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
 import com.google.android.glance.appwidget.host.requestPin
 import kotlinx.coroutines.delay
@@ -81,7 +81,6 @@ internal fun ViewerScreen(
     selectedProvider: AppWidgetProviderInfo,
     currentSize: DpSize,
     snapshot: suspend (AppWidgetProviderInfo, DpSize) -> RemoteViews,
-    exportSnapshot: suspend (AppWidgetHostView) -> Result<Uri>,
     onResize: (DpSize) -> Unit,
     onSelected: (AppWidgetProviderInfo) -> Unit
 ) {
@@ -179,7 +178,6 @@ internal fun ViewerScreen(
                                     context,
                                     snackbarHostState,
                                     snapshotHostState,
-                                    exportSnapshot
                                 )
                             }
                         }
@@ -204,10 +202,14 @@ private suspend fun doExport(
     context: Context,
     snackbarHostState: SnackbarHostState,
     appWidgetHostState: AppWidgetHostState,
-    exportSnapshot: suspend (AppWidgetHostView) -> Result<Uri>
 ) {
     val host = appWidgetHostState.value ?: return
-    val uriResult = exportSnapshot(host)
+    val uriResult = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+        Result.failure(UnsupportedOperationException("Export only support from Android 10"))
+    } else {
+        host.exportSnapshot()
+    }
+
     if (uriResult.isFailure) {
         snackbarHostState.showSnackbar(
             message = uriResult.exceptionOrNull()?.message ?: "Something went wrong",
