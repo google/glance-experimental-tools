@@ -25,7 +25,7 @@ package com.google.android.glance.appwidget.host {
 
   public final class AppWidgetHostUtilsKt {
     method @RequiresApi(android.os.Build.VERSION_CODES.Q) public static suspend Object? exportSnapshot(android.appwidget.AppWidgetHostView, optional String? fileName, optional kotlin.coroutines.Continuation<? super kotlin.Result<? extends android.net.Uri>> p);
-    method public static boolean requestPin(com.google.android.glance.appwidget.host.AppWidgetHostState, optional android.content.ComponentName target);
+    method public static boolean requestPin(com.google.android.glance.appwidget.host.AppWidgetHostState, optional android.content.ComponentName target, optional android.app.PendingIntent? successCallback);
   }
 
   public final class AppWidgetSizeUtilsKt {
@@ -46,11 +46,11 @@ package com.google.android.glance.appwidget.host {
 package com.google.android.glance.appwidget.host.glance {
 
   public final class GlanceRemoteViewsHostPreviewKt {
-    method @androidx.compose.runtime.Composable public static void GlanceRemoteViewsHostPreview(optional androidx.compose.ui.Modifier modifier, optional Object? state, optional long displaySize, optional android.appwidget.AppWidgetProviderInfo? provider, kotlin.jvm.functions.Function0<kotlin.Unit> content);
+    method @androidx.compose.runtime.Composable @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public static void GlanceRemoteViewsHostPreview(androidx.glance.appwidget.GlanceAppWidget glanceAppWidget, optional androidx.compose.ui.Modifier modifier, optional Object? state, optional long displaySize, optional android.appwidget.AppWidgetProviderInfo? provider);
   }
 
   public final class GlanceRemoteViewsKtxKt {
-    method @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public static suspend Object? compose(androidx.glance.appwidget.GlanceAppWidget, android.content.Context context, Object? state, android.appwidget.AppWidgetProviderInfo info, long availableSize, kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
+    method @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public static suspend Object? compose(androidx.glance.appwidget.GlanceAppWidget, android.content.Context context, long size, optional Object? state, optional android.appwidget.AppWidgetProviderInfo? info, optional kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
   }
 
 }
