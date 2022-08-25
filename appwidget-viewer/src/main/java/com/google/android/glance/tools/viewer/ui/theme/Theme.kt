@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.viewer.internal.ui.theme
+package com.google.android.glance.tools.viewer.ui.theme
 
 import android.app.Activity
 import android.os.Build

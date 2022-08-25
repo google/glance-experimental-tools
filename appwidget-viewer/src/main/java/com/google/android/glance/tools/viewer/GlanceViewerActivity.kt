@@ -16,6 +16,7 @@
 
 package com.google.android.glance.tools.viewer
 
+import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.appwidget.AppWidgetProviderInfo
 import android.os.Build
@@ -37,12 +38,12 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.GlanceRemoteViews
 import androidx.glance.appwidget.SizeMode
+import com.google.android.glance.appwidget.host.exportSnapshot
 import com.google.android.glance.appwidget.host.getSingleSize
 import com.google.android.glance.appwidget.host.getTargetSize
 import com.google.android.glance.appwidget.host.toSizeF
-import com.google.android.glance.tools.viewer.internal.AppWidgetViewerManager
-import com.google.android.glance.tools.viewer.internal.ui.ViewerScreen
-import com.google.android.glance.tools.viewer.internal.ui.theme.ViewerTheme
+import com.google.android.glance.tools.viewer.ui.ViewerScreen
+import com.google.android.glance.tools.viewer.ui.theme.ViewerTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -80,8 +81,17 @@ abstract class AppWidgetViewerActivity : ComponentActivity() {
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewerManager = AppWidgetViewerManager(this, getProviders())
-        val providers = viewerManager.getProvidersInfo()
+        val widgetManager = AppWidgetManager.getInstance(this)
+        val providers = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            widgetManager.getInstalledProvidersForPackage(packageName, null)
+        } else {
+            widgetManager.installedProviders.filter { it.provider.packageName == packageName }
+        }.filter { info ->
+            getProviders().any { selectedProvider ->
+                selectedProvider.name == info.provider.className
+            }
+        }
+
         selectedProvider = mutableStateOf(providers.first())
         currentSize = mutableStateOf(selectedProvider.value.getTargetSize(this))
 
@@ -96,23 +106,19 @@ abstract class AppWidgetViewerActivity : ComponentActivity() {
                         selectedProvider = selectedProvider.value,
                         currentSize = currentSize.value,
                         snapshot = ::getAppWidgetSnapshot,
-                        exportSnapshot = {
-                            viewerManager.exportSnapshot(
-                                selectedProvider.value,
-                                it
-                            )
+                        exportSnapshot = { hostView ->
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                                Result.failure(
+                                    UnsupportedOperationException(
+                                        "Export only support from Android 10"
+                                    )
+                                )
+                            } else {
+                                hostView.exportSnapshot()
+                            }
                         },
                         onResize = { currentSize.value = it },
-                        onSelected = { selectedProvider.value = it },
-                        onPin = { providerInfo ->
-                            viewerManager.requestPin(
-                                providerInfo,
-                                getAppWidgetSnapshot(
-                                    info = providerInfo,
-                                    size = providerInfo.getTargetSize(this)
-                                )
-                            )
-                        }
+                        onSelected = { selectedProvider.value = it }
                     )
                 }
             }

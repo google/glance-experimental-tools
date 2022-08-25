@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.viewer.internal.ui
+package com.google.android.glance.tools.viewer.ui
 
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetProviderInfo
@@ -70,6 +70,7 @@ import androidx.compose.ui.unit.dp
 import com.google.android.glance.appwidget.host.AppWidgetHost
 import com.google.android.glance.appwidget.host.AppWidgetHostState
 import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
+import com.google.android.glance.appwidget.host.requestPin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -82,8 +83,7 @@ internal fun ViewerScreen(
     snapshot: suspend (AppWidgetProviderInfo, DpSize) -> RemoteViews,
     exportSnapshot: suspend (AppWidgetHostView) -> Result<Uri>,
     onResize: (DpSize) -> Unit,
-    onSelected: (AppWidgetProviderInfo) -> Unit,
-    onPin: suspend (AppWidgetProviderInfo) -> Boolean
+    onSelected: (AppWidgetProviderInfo) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -164,7 +164,7 @@ internal fun ViewerScreen(
                         },
                         onPin = {
                             scope.launch {
-                                val requested = onPin(selectedProvider)
+                                val requested = snapshotHostState.requestPin()
                                 if (!requested) {
                                     snackbarHostState.showSnackbar(
                                         message = "Launcher does not support AppWidget pinning.",

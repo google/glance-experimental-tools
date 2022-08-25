@@ -13,12 +13,19 @@ package com.google.android.glance.appwidget.host {
   public final class AppWidgetHostState {
     ctor public AppWidgetHostState(android.appwidget.AppWidgetProviderInfo? providerInfo, androidx.compose.runtime.MutableState<android.appwidget.AppWidgetHostView> state);
     method public android.appwidget.AppWidgetProviderInfo? getProviderInfo();
+    method public android.widget.RemoteViews? getSnapshot();
     method public android.appwidget.AppWidgetHostView? getValue();
     method public boolean isReady();
     method public void updateAppWidget(android.widget.RemoteViews remoteViews);
     property public final boolean isReady;
     property public final android.appwidget.AppWidgetProviderInfo? providerInfo;
+    property public final android.widget.RemoteViews? snapshot;
     property public final android.appwidget.AppWidgetHostView? value;
+  }
+
+  public final class AppWidgetHostUtilsKt {
+    method @RequiresApi(android.os.Build.VERSION_CODES.Q) public static suspend Object? exportSnapshot(android.appwidget.AppWidgetHostView, optional String? fileName, optional kotlin.coroutines.Continuation<? super kotlin.Result<? extends android.net.Uri>> p);
+    method public static boolean requestPin(com.google.android.glance.appwidget.host.AppWidgetHostState, optional android.content.ComponentName target);
   }
 
   public final class AppWidgetSizeUtilsKt {
