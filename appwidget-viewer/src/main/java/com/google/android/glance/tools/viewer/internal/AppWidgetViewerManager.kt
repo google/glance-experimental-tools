@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.preview.internal
+package com.google.android.glance.tools.viewer.internal
 
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
@@ -38,13 +38,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-internal class AppWidgetPreviewManager(
+internal class AppWidgetViewerManager(
     private val context: Context,
     private val providers: List<Class<out AppWidgetProvider>>
 ) {
 
     companion object {
-        private const val PREVIEWS_FOLDER = "appwidget-previews"
+        private const val SNAPSHOTS_FOLDER = "appwidget-snapshots"
     }
 
     private val widgetManager = AppWidgetManager.getInstance(context)
@@ -71,7 +71,7 @@ internal class AppWidgetPreviewManager(
         return false
     }
 
-    suspend fun exportPreview(
+    suspend fun exportSnapshot(
         info: AppWidgetProviderInfo,
         hostView: AppWidgetHostView
     ): Result<Uri> {
@@ -86,7 +86,7 @@ internal class AppWidgetPreviewManager(
                 val collection = MediaStore.Images.Media.getContentUri(
                     MediaStore.VOLUME_EXTERNAL_PRIMARY
                 )
-                val dirDest = File(Environment.DIRECTORY_PICTURES, PREVIEWS_FOLDER)
+                val dirDest = File(Environment.DIRECTORY_PICTURES, SNAPSHOTS_FOLDER)
                 val date = System.currentTimeMillis()
                 val name = info.loadLabel(hostView.context.packageManager)
                 val newImage = ContentValues().apply {

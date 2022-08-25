@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.DpSize
 
 /**
  * Use this composable inside a [androidx.compose.ui.tooling.preview.Preview] composable to
- * display previews of RemoteViews (i.e Glance-appwidget)
+ * display previews of RemoteViews (e.g using GlanceRemoteViews from Glance-appwidget)
  *
  * @param modifier defines the container box for the host
  * @param displaySize the available size for the RemoteViews, if not provider it will match parent

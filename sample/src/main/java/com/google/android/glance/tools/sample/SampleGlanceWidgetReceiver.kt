@@ -89,12 +89,16 @@ fun SampleGlanceWidgetContent() {
     }
 }
 
+// Helper class to trigger composition in a Glance composable.
+@OptIn(ExperimentalGlanceRemoteViewsApi::class)
+private val remoteViews by lazy {
+    GlanceRemoteViews()
+}
+
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
 @Preview
 @Composable
 fun SampleGlanceWidgetPreview() {
-    // Helper class to trigger composition in a Glance composable
-    val remoteViews = GlanceRemoteViews()
     // The size of the widget
     val displaySize = DpSize(200.dp, 200.dp)
     // Provide a state depending on the GlanceAppWidget state definition
