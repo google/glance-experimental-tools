@@ -30,7 +30,6 @@ import androidx.glance.LocalSize
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.GlanceRemoteViews
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
@@ -43,7 +42,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextDecoration
 import androidx.glance.text.TextStyle
-import com.google.android.glance.appwidget.host.AppWidgetHostPreview
+import com.google.android.glance.appwidget.host.glance.GlanceRemoteViewsHostPreview
 
 class SampleGlanceWidgetReceiver : GlanceAppWidgetReceiver() {
 
@@ -89,12 +88,6 @@ fun SampleGlanceWidgetContent() {
     }
 }
 
-// Helper class to trigger composition in a Glance composable.
-@OptIn(ExperimentalGlanceRemoteViewsApi::class)
-private val remoteViews by lazy {
-    GlanceRemoteViews()
-}
-
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
 @Preview
 @Composable
@@ -104,12 +97,10 @@ fun SampleGlanceWidgetPreview() {
     // Provide a state depending on the GlanceAppWidget state definition
     val state = preferencesOf(SampleGlanceWidget.countKey to 2)
 
-    AppWidgetHostPreview(
+    GlanceRemoteViewsHostPreview(
         modifier = Modifier.fillMaxSize(),
-        displaySize = displaySize
-    ) { context ->
-        remoteViews.compose(context, displaySize, state) {
-            SampleGlanceWidgetContent() // Call the glance composable
-        }.remoteViews
-    }
+        glanceAppWidget = SampleGlanceWidget,
+        state = state,
+        displaySize = displaySize,
+    )
 }

@@ -25,7 +25,6 @@ import android.widget.RemoteViews
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.CallSuper
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,20 +35,12 @@ import androidx.compose.ui.unit.DpSize
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.GlanceRemoteViews
-import androidx.glance.appwidget.SizeMode
-import com.google.android.glance.appwidget.host.exportSnapshot
-import com.google.android.glance.appwidget.host.getSingleSize
 import com.google.android.glance.appwidget.host.getTargetSize
-import com.google.android.glance.appwidget.host.toSizeF
+import com.google.android.glance.appwidget.host.glance.compose
 import com.google.android.glance.tools.viewer.ui.ViewerScreen
 import com.google.android.glance.tools.viewer.ui.theme.ViewerTheme
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import kotlin.math.ceil
 
 /**
  * Base class to display AppWidgets.
@@ -106,17 +97,6 @@ abstract class AppWidgetViewerActivity : ComponentActivity() {
                         selectedProvider = selectedProvider.value,
                         currentSize = currentSize.value,
                         snapshot = ::getAppWidgetSnapshot,
-                        exportSnapshot = { hostView ->
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                                Result.failure(
-                                    UnsupportedOperationException(
-                                        "Export only support from Android 10"
-                                    )
-                                )
-                            } else {
-                                hostView.exportSnapshot()
-                            }
-                        },
                         onResize = { currentSize.value = it },
                         onSelected = { selectedProvider.value = it }
                     )
@@ -131,8 +111,6 @@ abstract class AppWidgetViewerActivity : ComponentActivity() {
  */
 @ExperimentalGlanceRemoteViewsApi
 abstract class GlanceViewerActivity : AppWidgetViewerActivity() {
-
-    private val glanceRemoteViews = GlanceRemoteViews()
 
     /**
      * Provides an instance of [GlanceAppWidget] to display inside the viewer.
@@ -159,67 +137,6 @@ abstract class GlanceViewerActivity : AppWidgetViewerActivity() {
 
         val receiverClass = receiver as Class<out GlanceAppWidgetReceiver>
         val snapshot = getGlanceSnapshot(receiverClass)
-        snapshot.instance.asRemoteViews(snapshot.state, info, size)
+        snapshot.instance.compose(applicationContext, size, snapshot.state, info)
     }
-
-    private suspend fun GlanceAppWidget.asRemoteViews(
-        state: Any?,
-        info: AppWidgetProviderInfo,
-        availableSize: DpSize
-    ): RemoteViews = when (val mode = sizeMode) {
-        SizeMode.Single -> compose(info.getSingleSize(applicationContext), state)
-        SizeMode.Exact -> compose(availableSize, state)
-        is SizeMode.Responsive -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            composeResponsive(mode.sizes, state)
-        } else {
-            compose(findBestSize(availableSize, mode.sizes), state)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    private suspend fun GlanceAppWidget.composeResponsive(
-        sizes: Set<DpSize>,
-        state: Any?
-    ) = coroutineScope {
-        val allViews = sizes.map { size ->
-            async {
-                size.toSizeF() to compose(size, state)
-            }
-        }.awaitAll()
-        allViews.singleOrNull()?.second ?: RemoteViews(allViews.toMap())
-    }
-
-    private suspend fun GlanceAppWidget.compose(
-        size: DpSize,
-        state: Any?
-    ): RemoteViews = glanceRemoteViews.compose(
-        context = applicationContext,
-        size = size,
-        state = state,
-        content = { Content() }
-    ).remoteViews
-
-    private fun Collection<DpSize>.sortedBySize() = sortedWith(
-        compareBy({ it.width.value * it.height.value }, { it.width.value })
-    )
-
-    // True if the object fits in the given size.
-    private infix fun DpSize.fitsIn(other: DpSize) =
-        (ceil(other.width.value) + 1 > width.value) &&
-            (ceil(other.height.value) + 1 > height.value)
-
-    private fun squareDistance(widgetSize: DpSize, layoutSize: DpSize): Float {
-        val dw = widgetSize.width.value - layoutSize.width.value
-        val dh = widgetSize.height.value - layoutSize.height.value
-        return dw * dw + dh * dh
-    }
-
-    private fun findBestSize(widgetSize: DpSize, layoutSizes: Collection<DpSize>): DpSize =
-        layoutSizes.mapNotNull { layoutSize ->
-            if (layoutSize fitsIn widgetSize) {
-                layoutSize to squareDistance(widgetSize, layoutSize)
-            } else {
-                null
-            }
-        }.minByOrNull { it.second }?.first ?: layoutSizes.sortedBySize().first()
 }

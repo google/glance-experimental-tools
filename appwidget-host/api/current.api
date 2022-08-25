@@ -43,3 +43,15 @@ package com.google.android.glance.appwidget.host {
 
 }
 
+package com.google.android.glance.appwidget.host.glance {
+
+  public final class GlanceRemoteViewsHostPreviewKt {
+    method @androidx.compose.runtime.Composable public static void GlanceRemoteViewsHostPreview(optional androidx.compose.ui.Modifier modifier, optional Object? state, optional long displaySize, optional android.appwidget.AppWidgetProviderInfo? provider, kotlin.jvm.functions.Function0<kotlin.Unit> content);
+  }
+
+  public final class GlanceRemoteViewsKtxKt {
+    method @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public static suspend Object? compose(androidx.glance.appwidget.GlanceAppWidget, android.content.Context context, Object? state, android.appwidget.AppWidgetProviderInfo info, long availableSize, kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
+  }
+
+}
+

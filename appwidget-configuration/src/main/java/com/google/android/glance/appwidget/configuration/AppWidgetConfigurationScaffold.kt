@@ -56,11 +56,11 @@ import androidx.glance.GlanceId
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
-import androidx.glance.appwidget.GlanceRemoteViews
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.GlanceStateDefinition
 import com.google.android.glance.appwidget.host.AppWidgetHost
+import com.google.android.glance.appwidget.host.glance.compose
 import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
 
 /**
@@ -251,9 +251,6 @@ fun AppWidgetConfigurationScaffold(
     var widgetSize by remember {
         mutableStateOf(displaySize)
     }
-    val remoteViews = remember {
-        GlanceRemoteViews()
-    }
     val previewState = rememberAppWidgetHostState(appWidgetConfigurationState.providerInfo)
 
     // If no display size specified get the launcher available size
@@ -280,14 +277,12 @@ fun AppWidgetConfigurationScaffold(
             widgetSize
         ) {
             previewState.updateAppWidget(
-                remoteViews.compose(
+                appWidgetConfigurationState.instance.compose(
                     context = context,
                     size = widgetSize,
                     state = currentState,
-                    content = {
-                        appWidgetConfigurationState.instance.Content()
-                    }
-                ).remoteViews
+                    info = appWidgetConfigurationState.providerInfo!!
+                )
             )
         }
     }

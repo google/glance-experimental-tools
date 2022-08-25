@@ -96,6 +96,8 @@ dependencies {
     implementation libs.compose.foundation.foundation
     implementation libs.compose.ui.ui
 
+    compileOnly libs.glance.appwidget
+
     // ======================
     // Test dependencies
     // ======================
