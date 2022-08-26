@@ -42,7 +42,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextDecoration
 import androidx.glance.text.TextStyle
-import com.google.android.glance.appwidget.host.glance.GlanceRemoteViewsHostPreview
+import com.google.android.glance.appwidget.host.glance.GlanceAppWidgetHostPreview
 
 class SampleGlanceWidgetReceiver : GlanceAppWidgetReceiver() {
 
@@ -97,7 +97,7 @@ fun SampleGlanceWidgetPreview() {
     // Provide a state depending on the GlanceAppWidget state definition
     val state = preferencesOf(SampleGlanceWidget.countKey to 2)
 
-    GlanceRemoteViewsHostPreview(
+    GlanceAppWidgetHostPreview(
         modifier = Modifier.fillMaxSize(),
         glanceAppWidget = SampleGlanceWidget,
         state = state,

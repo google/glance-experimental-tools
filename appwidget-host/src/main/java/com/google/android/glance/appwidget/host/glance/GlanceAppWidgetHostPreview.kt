@@ -40,7 +40,7 @@ import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
  */
 @ExperimentalGlanceRemoteViewsApi
 @Composable
-fun GlanceRemoteViewsHostPreview(
+fun GlanceAppWidgetHostPreview(
     glanceAppWidget: GlanceAppWidget,
     modifier: Modifier = Modifier,
     state: Any? = null,

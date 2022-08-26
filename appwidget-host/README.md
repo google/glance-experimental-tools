@@ -4,8 +4,8 @@
 
 A simple composable to display RemoteViews inside your app or to create `@Preview`s that together 
 with Compose and [Live Edits](https://developer.android.com/jetpack/compose/tooling#live-edit)
-enables, [in most situations](https://developer.android.com/studio/run#limitations), a hot-reload
-mechanism, reflecting changes nearly instantaneously.
+enables, [in most situations](https://developer.android.com/studio/run#limitations), a real-time
+update mechanism, reflecting code changes nearly instantaneously.
 
 > Note: This library is used by the appwidget-viewer and appwidget-configuration modules and is
 > independent from Glance-appwidget but provides extensions when glance-appwidget dependency is
@@ -53,8 +53,8 @@ fun MyScreen(provider: AppWidgetProviderInfo) {
 The `AppWidgetHostPreview` enables [Jetpack Compose Live Previews](https://developer.android.com/jetpack/compose/tooling)
 by creating a `@Preview`composable and running it in a device.
 
-Note: while the preview will render in Android Studio, the RemoteViews won't. You must always run
-it in a device.
+> Note: while the preview will render in Android Studio, the RemoteViews won't. You must always
+> deploy them in a device ([guide](https://developer.android.com/jetpack/compose/tooling#preview-deploy)).
 
 ```kotlin
 @Preview
@@ -86,7 +86,7 @@ fun MyGlanceWidgetPreview() {
     // Provide a state depending on the GlanceAppWidget state definition
     val state = preferencesOf(SampleGlanceWidget.countKey to 2)
 
-    GlanceRemoteViewsHostPreview(
+    GlanceAppWidgetHostPreview(
         modifier = Modifier.fillMaxSize(),
         glanceAppWidget = instance,
         state = state,
@@ -95,7 +95,7 @@ fun MyGlanceWidgetPreview() {
 }
 ```
 
-Important: don't forget to setup the compose-tooling as explained [here](https://developer.android.com/jetpack/compose/tooling)
+> Important: don't forget to setup the compose-tooling as explained [here](https://developer.android.com/jetpack/compose/tooling)
 
 ### Utils
 
