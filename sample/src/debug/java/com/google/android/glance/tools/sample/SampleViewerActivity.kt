@@ -22,24 +22,24 @@ import androidx.compose.ui.unit.DpSize
 import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import com.google.android.glance.tools.preview.GlancePreview
-import com.google.android.glance.tools.preview.GlancePreviewActivity
+import com.google.android.glance.tools.viewer.GlanceSnapshot
+import com.google.android.glance.tools.viewer.GlanceViewerActivity
 
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
-class SamplePreviewActivity : GlancePreviewActivity() {
+class SampleViewerActivity : GlanceViewerActivity() {
 
-    private var counter = 0L
+    private var counter = 0
 
     override fun getProviders() = listOf(
         SampleGlanceWidgetReceiver::class.java,
         SampleAppWidgetReceiver::class.java
     )
 
-    override suspend fun getGlancePreview(
+    override suspend fun getGlanceSnapshot(
         receiver: Class<out GlanceAppWidgetReceiver>
-    ): GlancePreview {
+    ): GlanceSnapshot {
         return when (receiver) {
-            SampleGlanceWidgetReceiver::class.java -> GlancePreview(
+            SampleGlanceWidgetReceiver::class.java -> GlanceSnapshot(
                 instance = SampleGlanceWidget,
                 state = mutablePreferencesOf(
                     SampleGlanceWidget.countKey to counter++
@@ -52,13 +52,13 @@ class SamplePreviewActivity : GlancePreviewActivity() {
     /**
      * To support non-glance widgets we can override this method and provide the RemoteViews directly
      */
-    override suspend fun getAppWidgetPreview(
+    override suspend fun getAppWidgetSnapshot(
         info: AppWidgetProviderInfo,
         size: DpSize
     ): RemoteViews {
         return when (info.provider.className) {
             SampleAppWidgetReceiver::class.java.name -> SampleAppWidget.createWidget(this)
-            else -> super.getAppWidgetPreview(info, size)
+            else -> super.getAppWidgetSnapshot(info, size)
         }
     }
 }

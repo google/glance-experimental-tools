@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.preview.internal.ui
+package com.google.android.glance.tools.viewer
 
-internal enum class PreviewPanel {
-    Resize, Info
-}
+import androidx.glance.appwidget.GlanceAppWidget
+
+/**
+ * Data class containing a snapshot of the [GlanceAppWidget] and the associated state as defined
+ * by the [GlanceAppWidget.stateDefinition] of the provided instance.
+ */
+data class GlanceSnapshot(val instance: GlanceAppWidget, val state: Any? = null)

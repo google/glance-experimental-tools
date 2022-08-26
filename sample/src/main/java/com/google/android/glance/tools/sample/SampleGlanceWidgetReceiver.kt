@@ -16,12 +16,18 @@
 
 package com.google.android.glance.tools.sample
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.preferencesOf
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalSize
+import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
@@ -36,6 +42,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextDecoration
 import androidx.glance.text.TextStyle
+import com.google.android.glance.appwidget.host.glance.GlanceRemoteViewsHostPreview
 
 class SampleGlanceWidgetReceiver : GlanceAppWidgetReceiver() {
 
@@ -44,34 +51,56 @@ class SampleGlanceWidgetReceiver : GlanceAppWidgetReceiver() {
 
 object SampleGlanceWidget : GlanceAppWidget() {
 
-    val countKey = longPreferencesKey("count")
+    val countKey = intPreferencesKey("count")
 
     override val sizeMode: SizeMode = SizeMode.Exact
 
     @Composable
     override fun Content() {
-        val count = currentState(countKey) ?: "N/A"
-        Column(
-            modifier = GlanceModifier
-                .fillMaxSize()
-                .background(Color.White)
-                .cornerRadius(16.dp)
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            val size = LocalSize.current
-            Text(
-                text = "Count: $count",
-                style = TextStyle(
-                    textAlign = TextAlign.Center,
-                    textDecoration = TextDecoration.Underline
-                )
-            )
-            Text(
-                text = "${size.width.value.toInt()} - ${size.height.value.toInt()}",
-                style = TextStyle(textAlign = TextAlign.Center)
-            )
-        }
+        SampleGlanceWidgetContent()
     }
+}
+
+@Composable
+fun SampleGlanceWidgetContent() {
+    val count = currentState(SampleGlanceWidget.countKey) ?: 0
+    Column(
+        modifier = GlanceModifier
+            .fillMaxSize()
+            .background(Color.White)
+            .cornerRadius(16.dp)
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        val size = LocalSize.current
+        Text(
+            text = "Count: $count",
+            style = TextStyle(
+                textAlign = TextAlign.Center,
+                textDecoration = TextDecoration.Underline
+            )
+        )
+        Text(
+            text = "${size.width.value.toInt()} - ${size.height.value.toInt()}",
+            style = TextStyle(textAlign = TextAlign.Center)
+        )
+    }
+}
+
+@OptIn(ExperimentalGlanceRemoteViewsApi::class)
+@Preview
+@Composable
+fun SampleGlanceWidgetPreview() {
+    // The size of the widget
+    val displaySize = DpSize(200.dp, 200.dp)
+    // Provide a state depending on the GlanceAppWidget state definition
+    val state = preferencesOf(SampleGlanceWidget.countKey to 2)
+
+    GlanceRemoteViewsHostPreview(
+        modifier = Modifier.fillMaxSize(),
+        glanceAppWidget = SampleGlanceWidget,
+        state = state,
+        displaySize = displaySize,
+    )
 }

@@ -80,10 +80,17 @@ class AppWidgetHostState(
         get() = state.value != null
 
     /**
+     * Holds the last snapshot provided to the host or null if none
+     */
+    var snapshot: RemoteViews? = null
+        internal set
+
+    /**
      * Update the current host (if available) to display the provided [RemoteViews]
      */
     fun updateAppWidget(remoteViews: RemoteViews) {
         val host = value ?: return
+        snapshot = remoteViews
         host.updateAppWidget(remoteViews)
     }
 }

@@ -27,7 +27,7 @@ gradleEnterprise {
 
 include ':sample'
 include ':appwidget-host'
-include ':appwidget-preview'
+include ':appwidget-viewer'
 include ':appwidget-configuration'
 
 // Enable Gradle's version catalog support

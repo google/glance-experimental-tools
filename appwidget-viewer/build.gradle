@@ -25,7 +25,7 @@ kotlin {
 }
 
 android {
-    namespace 'com.google.android.glance.tools.preview'
+    namespace 'com.google.android.glance.tools.viewer'
     compileSdk 33
 
     defaultConfig {

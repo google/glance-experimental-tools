@@ -6,15 +6,26 @@ package com.google.android.glance.appwidget.host {
     method @androidx.compose.runtime.Composable public static com.google.android.glance.appwidget.host.AppWidgetHostState rememberAppWidgetHostState(optional android.appwidget.AppWidgetProviderInfo? providerInfo);
   }
 
+  public final class AppWidgetHostPreviewKt {
+    method @androidx.compose.runtime.Composable public static void AppWidgetHostPreview(optional androidx.compose.ui.Modifier modifier, optional long displaySize, optional android.appwidget.AppWidgetProviderInfo? provider, kotlin.jvm.functions.Function2<? super android.content.Context,? super kotlin.coroutines.Continuation<? super android.widget.RemoteViews>,?> content);
+  }
+
   public final class AppWidgetHostState {
     ctor public AppWidgetHostState(android.appwidget.AppWidgetProviderInfo? providerInfo, androidx.compose.runtime.MutableState<android.appwidget.AppWidgetHostView> state);
     method public android.appwidget.AppWidgetProviderInfo? getProviderInfo();
+    method public android.widget.RemoteViews? getSnapshot();
     method public android.appwidget.AppWidgetHostView? getValue();
     method public boolean isReady();
     method public void updateAppWidget(android.widget.RemoteViews remoteViews);
     property public final boolean isReady;
     property public final android.appwidget.AppWidgetProviderInfo? providerInfo;
+    property public final android.widget.RemoteViews? snapshot;
     property public final android.appwidget.AppWidgetHostView? value;
+  }
+
+  public final class AppWidgetHostUtilsKt {
+    method @RequiresApi(android.os.Build.VERSION_CODES.Q) public static suspend Object? exportSnapshot(android.appwidget.AppWidgetHostView, optional String? fileName, optional kotlin.coroutines.Continuation<? super kotlin.Result<? extends android.net.Uri>> p);
+    method public static boolean requestPin(com.google.android.glance.appwidget.host.AppWidgetHostState, optional android.content.ComponentName target, optional android.app.PendingIntent? successCallback);
   }
 
   public final class AppWidgetSizeUtilsKt {
@@ -28,6 +39,18 @@ package com.google.android.glance.appwidget.host {
     method public static int toPixels(float, android.util.DisplayMetrics displayMetrics);
     method public static android.os.Bundle toSizeExtras(android.appwidget.AppWidgetProviderInfo, android.content.Context context, long availableSize);
     method public static android.util.SizeF toSizeF(long);
+  }
+
+}
+
+package com.google.android.glance.appwidget.host.glance {
+
+  public final class GlanceRemoteViewsHostPreviewKt {
+    method @androidx.compose.runtime.Composable @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public static void GlanceRemoteViewsHostPreview(androidx.glance.appwidget.GlanceAppWidget glanceAppWidget, optional androidx.compose.ui.Modifier modifier, optional Object? state, optional long displaySize, optional android.appwidget.AppWidgetProviderInfo? provider);
+  }
+
+  public final class GlanceRemoteViewsKtxKt {
+    method @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public static suspend Object? compose(androidx.glance.appwidget.GlanceAppWidget, android.content.Context context, long size, optional Object? state, optional android.appwidget.AppWidgetProviderInfo? info, optional kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
   }
 
 }

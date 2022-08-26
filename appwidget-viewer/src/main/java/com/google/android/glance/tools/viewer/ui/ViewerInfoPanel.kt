@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.preview.internal.ui
+package com.google.android.glance.tools.viewer.ui
 
 import android.appwidget.AppWidgetProviderInfo
 import android.os.Build
@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.google.android.glance.appwidget.host.getTargetSize
 
 @Composable
-internal fun PreviewInfoPanel(providerInfo: AppWidgetProviderInfo) {
+internal fun ViewerInfoPanel(providerInfo: AppWidgetProviderInfo) {
     val context = LocalContext.current
     Column(
         modifier = Modifier

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.glance.tools.preview.internal.ui
+package com.google.android.glance.tools.viewer.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun PreviewResizePanel(
+internal fun ViewerResizePanel(
     currentSize: DpSize,
     onSizeChange: (DpSize) -> Unit
 ) {

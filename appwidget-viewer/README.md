@@ -1,21 +1,21 @@
-# Previews for Glance-appwidget
+# AppWidget Viewer
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.google.android.glance.tools/appwidget-preview)](https://search.maven.org/search?q=g:com.google.android.glance.tools)
+[![Maven Central](https://img.shields.io/maven-central/v/com.google.android.glance.tools/appwidget-viewer)](https://search.maven.org/search?q=g:com.google.android.glance.tools)
 
-Previews for Glance-appwidget allows developers to speed up UI iterations and UI testing by
+This module allows developers to speed up UI iterations and UI testing by
 providing
-an embedded activity that displays all apps widgets, embedded inside the app (instead of the
+an embedded activity that displays apps widgets, embedded inside the app (instead of the
 launcher),
 offering faster previews and benefiting from the “Apply Changes” and “Live Edits” from Android
 Studio, among other features.
 
 ## Details
 
-The preview does not rely on
+The viewer does not rely on
 the [AppWidgetManager](https://developer.android.com/reference/android/appwidget/AppWidgetManager)
 and skips the BroadcastReceiver mechanism to directly render the
 [RemoteViews](https://developer.android.com/reference/android/widget/RemoteViews)
-inside the app’s activity by using the AppWidgetHostView directly ([limitations](#Limitations)).
+inside the app’s activity by using the AppWidgetHostView ([limitations](#Limitations)).
 
 This together with Compose
 and [Live Edits](https://developer.android.com/jetpack/compose/tooling#live-edit)
@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    debugImplementation "com.google.android.glance.tools:appwidget-preview:<version>"
+    debugImplementation "com.google.android.glance.tools:appwidget-viewer:<version>"
 }
 ```
 
@@ -51,7 +51,7 @@ the `AndroidManifest.xml`:
 
 ```xml
 
-<activity android:name=".MyWidgetPreviewActivity" android:exported="true">
+<activity android:name=".MyWidgetViewerActivity" android:exported="true">
     <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -61,17 +61,17 @@ the `AndroidManifest.xml`:
 
 > Note: setting the LAUNCHER intent-filter is optional but it will add a direct access in the device
 
-*Third*, provide the preview information:
+*Third*, provide the viewer information:
 
 ```kotlin
-class MyWidgetPreviewActivity : GlancePreviewActivity() {
+class MyWidgetViewerActivity : GlanceViewerActivity() {
 
-    override suspend fun getGlancePreview(
+    override suspend fun getGlanceSnapshot(
         receiver: Class<out GlanceAppWidgetReceiver>
-    ): GlancePreview {
+    ): GlanceSnapshot {
         return when (receiver) {
-            MyGlanceWidgetReceiver::class.java -> GlancePreview(
-                instance = MyGlanceWidget(), 
+            MyGlanceWidgetReceiver::class.java -> GlanceSnapshot(
+                instance = MyGlanceWidget(),
                 state = mutablePreferencesOf(intPreferencesKey("state") to value)
             )
             else -> throw IllegalArgumentException()
@@ -82,14 +82,14 @@ class MyWidgetPreviewActivity : GlancePreviewActivity() {
 }
 ```
 
-Now, you can launch the activity from Android Studio (change the run configuration) and preview the
+Now, you can launch the activity from Android Studio (change the run configuration) and view the
 changes.
 
 ### Additional features.
 
 #### Displays a list of provided apps widgets
 
-`GlancePreviewActivity` offers an API to pass a `GlanceAppWidget` instance (or RemoteView directly)
+`GlanceViewerActivity` offers an API to pass a `GlanceAppWidget` instance (or RemoteView directly)
 enabling customization of the widget and allowing initialization of data/stuff before displaying
 widget (e.g setting a fake GlanceState)
 
@@ -119,17 +119,15 @@ Use the info panel to display the AppWidgetProviderInfo metadata and highlight m
 
 <img src="images/preview-info-panel.png" width="200">
 
-#### Extract Preview and share:
+#### Extract Viewer and share:
 
-Use the share button to export the current preview into a PNG image. This image will be stored
-inside
-the device gallery under "appwidget-previews". These preview images can be used
-as `android:previewImage`
-metadata for the appwidget.
+Use the share button to export the current snapshot into a PNG image. This image will be stored
+inside the device gallery under "appwidget-viewers". These snapshot images can be used
+as `android:previewImage` metadata for the appwidget.
 
 To retrieve the files:
 
-1. `adb pull sdcard/Pictures/appwidget-previews .`
+1. `adb pull sdcard/Pictures/appwidget-viewers .`
 2. Use the [Device File Explorer](https://developer.android.com/studio/debug/device-file-explorer)
    in Android Studio
 
@@ -150,4 +148,4 @@ The design works with the following limitations:
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
 These are updated on every commit.
 
-[snap]: https://oss.sonatype.org/content/repositories/snapshots/com/google/android/glance/tools/appwidget-preview/
+[snap]: https://oss.sonatype.org/content/repositories/snapshots/com/google/android/glance/tools/appwidget-viewer/
