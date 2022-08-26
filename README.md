@@ -2,11 +2,14 @@
 
 > 🚧 Work in-progress: this library is under heavy development, APIs might change frequently
 
-This project aims to supplement Jetpack Glance with features that are commonly required by developers
+This project aims to supplement Jetpack Glance with features that are commonly required by
+developers
 but not yet available.
 
-It is a labs like environment for Glance tooling. We use it to help fill known gaps in the framework,
-experiment with new APIs and to gather insight into the development experience of developing a Glance library.
+It is a labs like environment for Glance tooling. We use it to help fill known gaps in the
+framework,
+experiment with new APIs and to gather insight into the development experience of developing a
+Glance library.
 
 ## Libraries
 
@@ -18,7 +21,7 @@ A simple composable to display RemoteViews inside your app or in `@Preview`s ena
 
 ### 🖼️ [appwidget-viewer](./appwidget-viewer)
 
-A debug tool to view and interact with AppWidget snapshots embedded inside the app.  
+A debug tool to view and interact with AppWidget snapshots embedded inside the app.
 
 ### 🛠️🎨 [appwidget-configuration](./appwidget-configuration)
 
@@ -26,9 +29,20 @@ A Material3 Scaffold implementation for appwidget configuration activities.
 
 ## Future?
 
-Any of the features available in this group of libraries may become obsolete in the future, at which point they will (probably) become deprecated.
+Any of the features available in this group of libraries may become obsolete in the future, at which
+point they will (probably) become deprecated.
 
 We will aim to provide a migration path (where possible), to whatever supersedes the functionality.
+
+## Why a separate repository?
+
+We want to iterate, explore and experiment with some new APIs and tooling more freely, without
+adding overhead to the main API and avoid API commitments. In addition, some of these features might
+not be allowed in AndroidX.
+
+> Note: this repository follows the [Accompanist](https://github.com/google/accompanist) pattern but
+> in a much more narrow scope (read more about it
+> [here](https://medium.com/androiddevelopers/jetpack-compose-accompanist-an-faq-b55117b02712))
 
 ## Contributions
 

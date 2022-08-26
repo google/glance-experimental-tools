@@ -20,8 +20,7 @@ inside the app’s activity by using the AppWidgetHostView ([limitations](#Limit
 This together with Compose
 and [Live Edits](https://developer.android.com/jetpack/compose/tooling#live-edit)
 we can achieve ([in most situations](https://developer.android.com/studio/run#limitations)) a
-hot-reload mechanism,
-allowing developers to see the changes reflected nearly instantaneously.
+real-time update mechanism, allowing developers to see the changes reflected nearly instantaneously.
 
 <img src="images/live-edit-showcase.gif" width="800">
 
