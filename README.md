@@ -41,7 +41,7 @@ adding overhead to the main API and avoid API commitments. In addition, some of 
 not be allowed in AndroidX.
 
 > Note: this repository follows the [Accompanist](https://github.com/google/accompanist) pattern but
-> in a much more narrow scope (read more about it
+> in a much more narrow scope (read more about the idea behind this pattern
 > [here](https://medium.com/androiddevelopers/jetpack-compose-accompanist-an-faq-b55117b02712))
 
 ## Contributions
