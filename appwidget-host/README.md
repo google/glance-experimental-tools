@@ -7,6 +7,10 @@ with Compose and [Live Edits](https://developer.android.com/jetpack/compose/tool
 enables, [in most situations](https://developer.android.com/studio/run#limitations), a real-time
 update mechanism, reflecting code changes nearly instantaneously.
 
+> Currently there is an issue that Live Edit stops working after the first change. It actually
+> updates the code but it does not render the update. To workaround you can click on the
+> AppWidgetHost container to force the update.
+
 > Note: This library is used by the appwidget-viewer and appwidget-configuration modules and is
 > independent from Glance-appwidget but provides extensions when glance-appwidget dependency is
 > present in the project

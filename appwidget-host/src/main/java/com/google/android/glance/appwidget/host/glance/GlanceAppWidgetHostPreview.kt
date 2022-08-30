@@ -17,8 +17,10 @@
 package com.google.android.glance.appwidget.host.glance
 
 import android.appwidget.AppWidgetProviderInfo
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpSize
@@ -26,10 +28,13 @@ import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
 import com.google.android.glance.appwidget.host.AppWidgetHost
 import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
+import kotlinx.coroutines.launch
 
 /**
  * Use this composable inside a [androidx.compose.ui.tooling.preview.Preview] composable to
  * display a glanceable composable
+ *
+ * Tip: Click on the container to force a content update.
  *
  * @param modifier defines the container box for the host
  * @param state the state associated to the composable as per [GlanceAppWidget.stateDefinition]
@@ -48,17 +53,26 @@ fun GlanceAppWidgetHostPreview(
     provider: AppWidgetProviderInfo? = null
 ) {
     val hostState = rememberAppWidgetHostState(provider)
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    suspend fun updateContent() {
+        hostState.updateAppWidget(glanceAppWidget.compose(context, displaySize, state, provider))
+    }
+
     if (hostState.isReady) {
         LaunchedEffect(hostState.value) {
-            hostState.updateAppWidget(
-                glanceAppWidget.compose(
-                    context = context,
-                    size = displaySize,
-                    state = state,
-                )
-            )
+            updateContent()
         }
     }
-    AppWidgetHost(modifier, displaySize, hostState)
+
+    AppWidgetHost(
+        modifier = Modifier.clickable {
+            scope.launch {
+                updateContent()
+            }
+        }.then(modifier),
+        displaySize = displaySize,
+        state = hostState
+    )
 }
