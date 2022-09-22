@@ -11,7 +11,7 @@ update mechanism, reflecting code changes nearly instantaneously.
 > updates the code but it does not render the update. To workaround you can click on the
 > AppWidgetHost container to force the update.
 
-> Note: This library is used by the appwidget-viewer and appwidget-configuration modules and is
+> **Note:** This library is used by the appwidget-viewer and appwidget-configuration modules and is
 > independent from Glance-appwidget but provides extensions when glance-appwidget dependency is
 > present in the project
 
@@ -51,6 +51,13 @@ fun MyScreen(provider: AppWidgetProviderInfo) {
     )
 }
 ```
+
+> **Important:** when using the `AppWidgetHost` inside an activity with AppCompat theme the host won't
+> be able to inflate the RemoteViews. This is because appcompat theme will switch the views to be
+> appcompat views and those are not supported by RemoteViews. Few options:
+>   - Use a different activity
+>   - Remove the theme (or set `android:viewInflaterClass=@null`)
+>   - Implement your own `AppCompatViewInflater`
 
 ### Use for Previews
 
