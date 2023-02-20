@@ -38,7 +38,7 @@ You can monitor the `isReady` value to then provide the RemoteViews to display i
 ```kotlin
 @Composable
 fun MyScreen(provider: AppWidgetProviderInfo) {
-    val state = rememberAppWidgetHostState(provider)
+    val previewHostState = rememberAppWidgetHostState(provider)
     if (previewHostState.isReady) {
         previewHostState.updateAppWidget(
             // Provide your RemoteViews
@@ -47,7 +47,7 @@ fun MyScreen(provider: AppWidgetProviderInfo) {
     AppWidgetHost(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         widgetSize = DpSize(200.dp, 200.dp),
-        state = state
+        state = previewHostState
     )
 }
 ```
