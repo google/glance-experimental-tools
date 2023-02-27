@@ -75,6 +75,7 @@ class AppWidgetConfigurationState(
     val glanceId: GlanceId?,
     val providerInfo: AppWidgetProviderInfo?,
     val instance: GlanceAppWidget,
+    private val appWidgetId: Int?,
     private val activity: Activity
 ) {
 
@@ -119,9 +120,6 @@ class AppWidgetConfigurationState(
     suspend fun applyConfiguration() {
         checkNotNull(glanceId) { "Cannot apply configuration in a null GlanceId" }
 
-        // Set result ok to tell the launcher the configuration was a success
-        activity.setResult(Activity.RESULT_OK, activity.intent)
-
         @Suppress("UNCHECKED_CAST")
         updateAppWidgetState(
             activity,
@@ -131,6 +129,12 @@ class AppWidgetConfigurationState(
             internalState
         }
         instance.update(activity, glanceId)
+        
+        val intent = activity.intent.apply {
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        }
+        // Set result ok to tell the launcher the configuration was a success
+        activity.setResult(Activity.RESULT_OK, intent)
         activity.finish()
     }
 
@@ -181,6 +185,7 @@ fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget):
         glanceId = glanceId,
         providerInfo = providerInfo,
         instance = configurationInstance,
+        appWidgetId = null,
         activity = activity
     )
     return produceState(initialValue = initialValue, configurationInstance) {
@@ -194,6 +199,7 @@ fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget):
             glanceId = glanceId,
             providerInfo = providerInfo,
             instance = configurationInstance,
+            appWidgetId = glanceAppWidgetManager.getAppWidgetId(glanceId),
             activity = activity
         )
     }.value
