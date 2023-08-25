@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
  */
 @ExperimentalGlanceRemoteViewsApi
 @Composable
-fun GlanceAppWidgetHostPreview(
+public fun GlanceAppWidgetHostPreview(
     glanceAppWidget: GlanceAppWidget,
     modifier: Modifier = Modifier,
     state: Any? = null,

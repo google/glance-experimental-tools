@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
  * @param content a suspend lambda returning the actual RemoteViews
  */
 @Composable
-fun AppWidgetHostPreview(
+public fun AppWidgetHostPreview(
     modifier: Modifier = Modifier,
     displaySize: DpSize = DpSize.Unspecified,
     provider: AppWidgetProviderInfo? = null,
