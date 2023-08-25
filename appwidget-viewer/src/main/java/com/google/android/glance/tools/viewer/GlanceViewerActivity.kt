@@ -45,12 +45,12 @@ import kotlinx.coroutines.withContext
 /**
  * Base class to display AppWidgets.
  */
-abstract class AppWidgetViewerActivity : ComponentActivity() {
+public abstract class AppWidgetViewerActivity : ComponentActivity() {
 
     /**
      * The list of [AppWidgetProvider] to display in the viewer
      */
-    abstract fun getProviders(): List<Class<out AppWidgetProvider>>
+    public abstract fun getProviders(): List<Class<out AppWidgetProvider>>
 
     /**
      * Provides the [RemoteViews] snapshot of the given [AppWidgetProviderInfo] for the given size
@@ -60,7 +60,7 @@ abstract class AppWidgetViewerActivity : ComponentActivity() {
      *
      * @return the [RemoteViews] instance to use for the viewer.
      */
-    abstract suspend fun getAppWidgetSnapshot(
+    public abstract suspend fun getAppWidgetSnapshot(
         info: AppWidgetProviderInfo,
         size: DpSize
     ): RemoteViews
@@ -110,14 +110,14 @@ abstract class AppWidgetViewerActivity : ComponentActivity() {
  * Extend this activity to provide a set of GlanceAppWidget snapshots to display.
  */
 @ExperimentalGlanceRemoteViewsApi
-abstract class GlanceViewerActivity : AppWidgetViewerActivity() {
+public abstract class GlanceViewerActivity : AppWidgetViewerActivity() {
 
     /**
      * Provides an instance of [GlanceAppWidget] to display inside the viewer.
      *
      * @param receiver - The selected [GlanceAppWidgetReceiver] to display
      */
-    abstract suspend fun getGlanceSnapshot(receiver: Class<out GlanceAppWidgetReceiver>): GlanceSnapshot
+    public abstract suspend fun getGlanceSnapshot(receiver: Class<out GlanceAppWidgetReceiver>): GlanceSnapshot
 
     /**
      * Only override this method to directly provide [RemoteViews] instead of [GlanceAppWidget]

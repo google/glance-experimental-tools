@@ -26,6 +26,7 @@ import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceRemoteViews
 import androidx.glance.appwidget.SizeMode
+import androidx.glance.text.Text
 import com.google.android.glance.appwidget.host.getSingleSize
 import com.google.android.glance.appwidget.host.toSizeF
 import kotlinx.coroutines.async
@@ -43,7 +44,7 @@ internal val glanceRemoteViews by lazy { GlanceRemoteViews() }
  * @return the generated RemoteViews
  */
 @ExperimentalGlanceRemoteViewsApi
-suspend fun GlanceAppWidget.compose(
+public suspend fun GlanceAppWidget.compose(
     context: Context,
     size: DpSize,
     state: Any? = null,
@@ -82,7 +83,7 @@ private suspend fun GlanceAppWidget.compose(
     context = context,
     size = size,
     state = state,
-    content = { Content() }
+    content = { Text(text = "Content() missing") }  // TODO Content() composable is not available anymore
 ).remoteViews
 
 private fun Collection<DpSize>.sortedBySize() = sortedWith(

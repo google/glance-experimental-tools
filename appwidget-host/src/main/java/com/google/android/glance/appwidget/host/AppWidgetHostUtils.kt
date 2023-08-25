@@ -48,7 +48,7 @@ private const val SNAPSHOTS_FOLDER = "appwidget-snapshots"
  *
  * @see AppWidgetManager.requestPinAppWidget
  */
-fun AppWidgetHostState.requestPin(
+public fun AppWidgetHostState.requestPin(
     target: ComponentName = value!!.appWidgetInfo.provider,
     successCallback: PendingIntent? = null
 ): Boolean {
@@ -71,7 +71,7 @@ fun AppWidgetHostState.requestPin(
  * @return the result of the operation with the image URI if successful
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-suspend fun AppWidgetHostView.exportSnapshot(fileName: String? = null): Result<Uri> {
+public suspend fun AppWidgetHostView.exportSnapshot(fileName: String? = null): Result<Uri> {
     return runCatching {
         withContext(Dispatchers.IO) {
             val bitmap = (this@exportSnapshot as View).toBitmap()
@@ -94,7 +94,7 @@ suspend fun AppWidgetHostView.exportSnapshot(fileName: String? = null): Result<U
             }
             context.contentResolver.insert(collection, newImage)!!.apply {
                 context.contentResolver.openOutputStream(this, "w").use {
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, it!!)
                 }
                 newImage.clear()
                 newImage.put(MediaStore.Images.Media.IS_PENDING, 0)

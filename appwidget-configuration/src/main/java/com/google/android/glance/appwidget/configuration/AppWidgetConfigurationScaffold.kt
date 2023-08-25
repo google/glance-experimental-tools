@@ -70,11 +70,11 @@ import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
  * @param instance
  * @param state Current state for the configuration. Use [getCurrentState] and [updateCurrentState] instead.
  */
-class AppWidgetConfigurationState(
+public class AppWidgetConfigurationState(
     state: Any?,
-    val glanceId: GlanceId?,
-    val providerInfo: AppWidgetProviderInfo?,
-    val instance: GlanceAppWidget,
+    public val glanceId: GlanceId?,
+    public val providerInfo: AppWidgetProviderInfo?,
+    public val instance: GlanceAppWidget,
     private val activity: Activity
 ) {
 
@@ -91,7 +91,7 @@ class AppWidgetConfigurationState(
      *
      * @see updateCurrentState
      */
-    inline fun <reified T> getCurrentState(): T? = internalState as? T
+    public inline fun <reified T> getCurrentState(): T? = internalState as? T
 
     /**
      * Updates the [GlanceAppWidget] state for the configuration preview without modifying the
@@ -104,7 +104,7 @@ class AppWidgetConfigurationState(
      * @see getCurrentState
      * @see androidx.glance.appwidget.state.updateAppWidgetState
      */
-    inline fun <reified T> updateCurrentState(update: (T) -> T) {
+    public inline fun <reified T> updateCurrentState(update: (T) -> T) {
         requireNotNull(internalState)
         internalState = update(internalState as T)
     }
@@ -116,7 +116,7 @@ class AppWidgetConfigurationState(
      * This method will persist the latest value provided by [updateCurrentState] as defined by the
      * [GlanceAppWidget.stateDefinition] and calls [GlanceAppWidget.update].
      */
-    suspend fun applyConfiguration() {
+    public suspend fun applyConfiguration() {
         checkNotNull(glanceId) { "Cannot apply configuration in a null GlanceId" }
 
         // Set result ok to tell the launcher the configuration was a success
@@ -143,7 +143,7 @@ class AppWidgetConfigurationState(
      *
      * Note: this will be the same result as if users performs a back-press action.
      */
-    fun discardConfiguration() {
+    public fun discardConfiguration() {
         activity.setResult(Activity.RESULT_CANCELED)
         activity.finish()
     }
@@ -159,7 +159,7 @@ class AppWidgetConfigurationState(
  * @return a new or cached [AppWidgetConfigurationState] instance
  */
 @Composable
-fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget): AppWidgetConfigurationState {
+public fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget): AppWidgetConfigurationState {
     val activity = (LocalContext.current as Activity).apply {
         // Set the result to canceled in case the configuration does not finish
         setResult(Activity.RESULT_CANCELED)
@@ -230,7 +230,7 @@ fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget):
 @ExperimentalGlanceRemoteViewsApi
 @ExperimentalMaterial3Api
 @Composable
-fun AppWidgetConfigurationScaffold(
+public fun AppWidgetConfigurationScaffold(
     appWidgetConfigurationState: AppWidgetConfigurationState,
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},

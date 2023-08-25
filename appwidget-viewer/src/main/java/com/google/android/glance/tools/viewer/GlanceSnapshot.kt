@@ -22,4 +22,4 @@ import androidx.glance.appwidget.GlanceAppWidget
  * Data class containing a snapshot of the [GlanceAppWidget] and the associated state as defined
  * by the [GlanceAppWidget.stateDefinition] of the provided instance.
  */
-data class GlanceSnapshot(val instance: GlanceAppWidget, val state: Any? = null)
+public data class GlanceSnapshot(val instance: GlanceAppWidget, val state: Any? = null)

@@ -59,15 +59,15 @@ import java.util.concurrent.Executors
  *
  * @see AppWidgetHost
  */
-class AppWidgetHostState(
-    val providerInfo: AppWidgetProviderInfo?,
+public class AppWidgetHostState(
+    public val providerInfo: AppWidgetProviderInfo?,
     private val state: MutableState<AppWidgetHostView?>
 ) {
 
     /**
      * The current [AppWidgetHostView] instance or null if not laid out yet.
      */
-    var value: AppWidgetHostView?
+    public var value: AppWidgetHostView?
         get() = state.value
         internal set(value) {
             state.value = value
@@ -76,19 +76,19 @@ class AppWidgetHostState(
     /**
      * True if the host is ready to display RemoteViews, false otherwise
      */
-    val isReady: Boolean
+    public val isReady: Boolean
         get() = state.value != null
 
     /**
      * Holds the last snapshot provided to the host or null if none
      */
-    var snapshot: RemoteViews? = null
+    public var snapshot: RemoteViews? = null
         internal set
 
     /**
      * Update the current host (if available) to display the provided [RemoteViews]
      */
-    fun updateAppWidget(remoteViews: RemoteViews) {
+    public fun updateAppWidget(remoteViews: RemoteViews) {
         val host = value ?: return
         snapshot = remoteViews
         host.updateAppWidget(remoteViews)
@@ -96,7 +96,9 @@ class AppWidgetHostState(
 }
 
 @Composable
-fun rememberAppWidgetHostState(providerInfo: AppWidgetProviderInfo? = null) = remember(providerInfo) {
+public fun rememberAppWidgetHostState(providerInfo: AppWidgetProviderInfo? = null): AppWidgetHostState = remember(
+    providerInfo
+) {
     AppWidgetHostState(providerInfo, mutableStateOf(null))
 }
 
@@ -110,7 +112,7 @@ fun rememberAppWidgetHostState(providerInfo: AppWidgetProviderInfo? = null) = re
  * @param gridColor - The color of the grid and widget area lines or null for none.
  */
 @Composable
-fun AppWidgetHost(
+public fun AppWidgetHost(
     modifier: Modifier = Modifier,
     displaySize: DpSize,
     state: AppWidgetHostState,
