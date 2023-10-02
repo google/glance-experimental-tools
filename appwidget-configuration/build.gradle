@@ -26,7 +26,7 @@ kotlin {
 
 android {
     namespace 'com.google.android.glance.appwidget.configuration'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 21
@@ -52,11 +52,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         buildConfig false
@@ -65,12 +62,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
     }
-    lintOptions {
-        textReport true
-        textOutput 'stdout'
-        // We run a full lint analysis as build part in CI, so skip vital checks for assemble tasks
-        checkReleaseBuilds false
-    }
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -78,11 +69,10 @@ android {
         animationsDisabled true
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
-
     packagingOptions {
-        // Exclude license files to enable our test APK to build (has no effect on our AARs)
-        excludes += "/META-INF/AL2.0"
-        excludes += "/META-INF/LGPL2.1"
+        resources {
+            excludes += ['/META-INF/AL2.0', '/META-INF/LGPL2.1']
+        }
     }
 
     publishing {
@@ -90,15 +80,23 @@ android {
             allVariants()
         }
     }
+    lint {
+        checkReleaseBuilds false
+        textOutput file('stdout')
+        textReport true
+    }
 }
 
 dependencies {
     api project(":appwidget-host")
 
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.foundation)
+
     implementation libs.glance.appwidget
     implementation libs.compose.foundation.foundation
     implementation libs.compose.ui.ui
-    implementation libs.compose.material.material3
+    implementation libs.androidx.compose.material3
 
     // ======================
     // Test dependencies

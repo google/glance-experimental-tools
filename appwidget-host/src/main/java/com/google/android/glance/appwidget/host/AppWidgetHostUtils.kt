@@ -94,6 +94,7 @@ suspend fun AppWidgetHostView.exportSnapshot(fileName: String? = null): Result<U
             }
             context.contentResolver.insert(collection, newImage)!!.apply {
                 context.contentResolver.openOutputStream(this, "w").use {
+                    check(it != null) { "Could not export the snapshot." }
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
                 }
                 newImage.clear()
