@@ -23,6 +23,11 @@ A simple composable to display RemoteViews inside your app or in `@Preview`s ena
 
 A debug tool to view and interact with AppWidget snapshots embedded inside the app.
 
+### 🖼️ [appwidget-testing](./appwidget-testing)
+
+An activity to host a Glance composable for screenshot testing, without binding the entire
+appWidget.
+
 ### 🛠️🎨 [appwidget-configuration](./appwidget-configuration)
 
 A Material3 Scaffold implementation for appwidget configuration activities.
