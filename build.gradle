@@ -136,19 +136,6 @@ subprojects {
         }
     }
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { compile ->
-        kotlinOptions {
-            // Treat all Kotlin warnings as errors
-            allWarningsAsErrors = true
-            // Set JVM target to 1.8
-            jvmTarget = "1.8"
-            // Allow use of @OptIn
-            freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-            // Enable default methods in interfaces
-            freeCompilerArgs += "-Xjvm-default=all"
-        }
-    }
-
     // Read in the signing.properties file if it is exists
     def signingPropsFile = rootProject.file('release/signing.properties')
     if (signingPropsFile.exists()) {
@@ -187,7 +174,7 @@ subprojects {
                 reportUndocumented.set(true)
                 skipEmptyPackages.set(true)
                 skipDeprecated.set(true)
-                jdkVersion.set(8)
+                jdkVersion.set(17)
 
                 // Add Android SDK packages
                 noAndroidSdkLink.set(false)

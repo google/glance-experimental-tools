@@ -94,7 +94,7 @@ suspend fun AppWidgetHostView.exportSnapshot(fileName: String? = null): Result<U
             }
             context.contentResolver.insert(collection, newImage)!!.apply {
                 context.contentResolver.openOutputStream(this, "w").use {
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, it!!)
                 }
                 newImage.clear()
                 newImage.put(MediaStore.Images.Media.IS_PENDING, 0)

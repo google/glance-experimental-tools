@@ -21,16 +21,15 @@ plugins {
 }
 
 kotlin {
-    explicitApi()
 }
 
 android {
     namespace 'com.google.android.glance.appwidget.configuration'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 21
-        targetSdk 33
+        targetSdk 34
 
         consumerProguardFiles "consumer-rules.pro"
 
@@ -52,25 +51,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures {
         buildConfig false
         compose true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
     }
-    lintOptions {
-        textReport true
-        textOutput 'stdout'
-        // We run a full lint analysis as build part in CI, so skip vital checks for assemble tasks
-        checkReleaseBuilds false
-    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -78,17 +73,25 @@ android {
         animationsDisabled true
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
-
     packagingOptions {
-        // Exclude license files to enable our test APK to build (has no effect on our AARs)
-        excludes += "/META-INF/AL2.0"
-        excludes += "/META-INF/LGPL2.1"
+        resources {
+            excludes += [
+                '/META-INF/AL2.0',
+                '/META-INF/LGPL2.1'
+            ]
+        }
     }
+
 
     publishing {
         multipleVariants {
             allVariants()
         }
+    }
+    lint {
+        checkReleaseBuilds false
+        textOutput file('stdout')
+        textReport true
     }
 }
 
@@ -117,3 +120,4 @@ dependencies {
 }
 
 apply plugin: "com.vanniktech.maven.publish"
+
