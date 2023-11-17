@@ -126,3 +126,9 @@ dependencies {
 }
 
 apply plugin: "com.vanniktech.maven.publish"
+apply plugin: "me.tylerbwong.gradle.metalava"
+
+metalava {
+    filename = "api/current.api"
+    reportLintsAsErrors = true
+}

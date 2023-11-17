@@ -40,7 +40,7 @@ google-material = "com.google.android.material:material:1.10.0"
 
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "gradlePlugin" }
 gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.25.3"
-metalavaGradle = "me.tylerbwong.gradle:metalava-gradle:0.1.9"
+metalavaGradle = "me.tylerbwong.gradle.metalava:plugin:0.3.5"
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-stdlibJdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
