@@ -3,7 +3,7 @@ package com.google.android.glance.tools.viewer {
 
   public abstract class AppWidgetViewerActivity extends androidx.activity.ComponentActivity {
     ctor public AppWidgetViewerActivity();
-    method public abstract suspend Object? getAppWidgetSnapshot(android.appwidget.AppWidgetProviderInfo info, long size, kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
+    method public abstract suspend Object? getAppWidgetSnapshot(android.appwidget.AppWidgetProviderInfo info, long size, kotlin.coroutines.Continuation<? super android.widget.RemoteViews>);
     method public abstract java.util.List<java.lang.Class<? extends android.appwidget.AppWidgetProvider>> getProviders();
   }
 
@@ -20,34 +20,8 @@ package com.google.android.glance.tools.viewer {
 
   @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public abstract class GlanceViewerActivity extends com.google.android.glance.tools.viewer.AppWidgetViewerActivity {
     ctor public GlanceViewerActivity();
-    method public suspend Object? getAppWidgetSnapshot(android.appwidget.AppWidgetProviderInfo info, long size, kotlin.coroutines.Continuation<? super android.widget.RemoteViews> p);
-    method public abstract suspend Object? getGlanceSnapshot(Class<? extends androidx.glance.appwidget.GlanceAppWidgetReceiver> receiver, kotlin.coroutines.Continuation<? super com.google.android.glance.tools.viewer.GlanceSnapshot> p);
-  }
-
-}
-
-package com.google.android.glance.tools.viewer.ui {
-
-  public final class ViewerInfoPanelKt {
-  }
-
-  public final class ViewerResizePanelKt {
-  }
-
-  public final class ViewerScreenKt {
-  }
-
-}
-
-package com.google.android.glance.tools.viewer.ui.theme {
-
-  public final class ColorKt {
-  }
-
-  public final class ThemeKt {
-  }
-
-  public final class TypeKt {
+    method public suspend Object? getAppWidgetSnapshot(android.appwidget.AppWidgetProviderInfo info, long size, kotlin.coroutines.Continuation<? super android.widget.RemoteViews>);
+    method public abstract suspend Object? getGlanceSnapshot(Class<? extends androidx.glance.appwidget.GlanceAppWidgetReceiver> receiver, kotlin.coroutines.Continuation<? super com.google.android.glance.tools.viewer.GlanceSnapshot>);
   }
 
 }
