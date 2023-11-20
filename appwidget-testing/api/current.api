@@ -1,0 +1,13 @@
+// Signature format: 4.0
+package com.google.android.glance.appwidget.testing {
+
+  @RequiresApi(android.os.Build.VERSION_CODES.O) public final class GlanceScreenshotTestActivity extends android.app.Activity {
+    ctor public GlanceScreenshotTestActivity();
+    method public void renderComposable(kotlin.jvm.functions.Function0<kotlin.Unit> composable);
+    method public void setAppWidgetSize(long size);
+    method public <T> void setState(T? state);
+    method public void wrapContentSize();
+  }
+
+}
+

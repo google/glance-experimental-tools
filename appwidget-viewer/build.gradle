@@ -94,6 +94,8 @@ android {
 }
 
 dependencies {
+    implementation platform(libs.androidx.compose.bom)
+
     api project(":appwidget-host")
 
     compileOnly libs.glance.appwidget

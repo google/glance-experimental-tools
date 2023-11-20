@@ -1,7 +1,7 @@
 [versions]
-compose = "1.5.4"
 composeCompiler = "1.5.3"
 composesnapshot = "-" # a single character = no snapshot
+androidx-compose-bom = "2023.10.00"
 
 glance = "1.1.0-SNAPSHOT"
 glancesnapshot = "11101881" # a single character = no snapshot
@@ -19,20 +19,25 @@ androidxtest-rules = "1.5.0"
 androidxtest-orchestrator = "1.4.2"
 androidxtest-runner = "1.5.2"
 
-[libraries]
-compose-ui-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-ui-util = { module = "androidx.compose.ui:ui-util", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
-compose-foundation-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "compose" }
-compose-material-material = { module = "androidx.compose.material:material", version.ref = "compose" }
-compose-material-iconsext = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
-compose-animation-animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }
+androidx-test-ext-junit = "1.1.5"
 
-compose-material-material3 = "androidx.compose.material3:material3:1.1.2"
+robolectric = "4.10.3"
+roborazzi = "1.5.0"
+
+[libraries]
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
+compose-ui-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-util = { module = "androidx.compose.ui:ui-util" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+compose-foundation-foundation = { module = "androidx.compose.foundation:foundation" }
+compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
+compose-material-material = { module = "androidx.compose.material:material" }
+compose-material-iconsext = { module = "androidx.compose.material:material-icons-extended" }
+compose-animation-animation = { module = "androidx.compose.animation:animation" }
+compose-material-material3 = { module = "androidx.compose.material3:material3" }
 
 glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 
@@ -66,10 +71,13 @@ androidx-test-uiAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 # alpha for robolectric x compose fix
 androidx-test-espressoCore = "androidx.test.espresso:espresso-core:3.5.1"
 androidx-test-espressoWeb = "androidx.test.espresso:espresso-web:3.5.1"
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 
 junit = "junit:junit:4.13.2"
 truth = "com.google.truth:truth:1.1.2"
-robolectric = "org.robolectric:robolectric:4.9.2"
+
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = "roborazzi"}
 
 affectedmoduledetector = "com.dropbox.affectedmoduledetector:affectedmoduledetector:0.1.2"
 
@@ -77,3 +85,5 @@ android-tools-build-gradle = { module = "com.android.tools.build:gradle", versio
 android-tools-lint-lint = { module = "com.android.tools.lint:lint", version.ref = "lintMinCompose" }
 android-tools-lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "lintMinCompose" }
 android-tools-lint-tests = { module = "com.android.tools.lint:lint-tests", version.ref = "lintMinCompose" }
+[plugins]
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi"}

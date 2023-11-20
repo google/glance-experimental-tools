@@ -95,6 +95,7 @@ android {
 
 
 dependencies {
+    implementation platform(libs.androidx.compose.bom)
     implementation libs.compose.foundation.foundation
     implementation libs.compose.ui.ui
 
