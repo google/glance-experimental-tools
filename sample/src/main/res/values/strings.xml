@@ -16,4 +16,5 @@
 
 <resources>
     <string name="app_name">Glance Experimental Tools</string>
+    <string name="count_label">Count: </string>
 </resources>

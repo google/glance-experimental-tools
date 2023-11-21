@@ -16,6 +16,7 @@
 
 package com.google.android.glance.tools.sample
 
+import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,19 +26,26 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.preferencesOf
+import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.Image
+import androidx.glance.ImageProvider
 import androidx.glance.LocalSize
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
+import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
+import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextDecoration
@@ -54,16 +62,13 @@ object SampleGlanceWidget : GlanceAppWidget() {
     val countKey = intPreferencesKey("count")
 
     override val sizeMode: SizeMode = SizeMode.Exact
-
-    @Composable
-    override fun Content() {
-        SampleGlanceWidgetContent()
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent { SampleGlanceWidgetContent() }
     }
 }
 
 @Composable
 fun SampleGlanceWidgetContent() {
-    val count = currentState(SampleGlanceWidget.countKey) ?: 0
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
@@ -73,7 +78,22 @@ fun SampleGlanceWidgetContent() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        val count = currentState(SampleGlanceWidget.countKey) ?: 0
         val size = LocalSize.current
+
+        CountRow(count)
+        SizeText(size)
+    }
+}
+
+@Composable
+fun CountRow(count: Int) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Image(
+            provider = ImageProvider(R.drawable.ic_android),
+            contentDescription = "android icon",
+        )
+        Spacer(modifier = GlanceModifier.width(8.dp))
         Text(
             text = "Count: $count",
             style = TextStyle(
@@ -81,11 +101,15 @@ fun SampleGlanceWidgetContent() {
                 textDecoration = TextDecoration.Underline
             )
         )
-        Text(
-            text = "${size.width.value.toInt()} - ${size.height.value.toInt()}",
-            style = TextStyle(textAlign = TextAlign.Center)
-        )
     }
+}
+
+@Composable
+fun SizeText(size: DpSize) {
+    Text(
+        text = "${size.width.value.toInt()} - ${size.height.value.toInt()}",
+        style = TextStyle(textAlign = TextAlign.Center)
+    )
 }
 
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)

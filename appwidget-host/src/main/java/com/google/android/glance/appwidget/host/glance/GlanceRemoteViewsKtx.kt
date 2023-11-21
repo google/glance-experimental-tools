@@ -21,6 +21,8 @@ import android.content.Context
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.unit.DpSize
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
@@ -84,6 +86,10 @@ private suspend fun GlanceAppWidget.compose(
     state = state,
     content = { Content() }
 ).remoteViews
+
+@Composable
+private fun Content() {
+}
 
 private fun Collection<DpSize>.sortedBySize() = sortedWith(
     compareBy({ it.width.value * it.height.value }, { it.width.value })

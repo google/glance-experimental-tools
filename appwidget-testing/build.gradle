@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 The Android Open Source Project
+ * Copyright 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,16 @@ plugins {
 }
 
 kotlin {
+    explicitApi()
 }
 
 android {
-    namespace 'com.google.android.glance.appwidget.configuration'
+    namespace 'com.google.android.glance.appwidget.testing'
     compileSdk 34
 
     defaultConfig {
         minSdk 21
-        targetSdk 34
+        targetSdk 33
 
         consumerProguardFiles "consumer-rules.pro"
 
@@ -61,11 +62,9 @@ android {
         buildConfig false
         compose true
     }
-
     composeOptions {
         kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
     }
-
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -82,7 +81,6 @@ android {
         }
     }
 
-
     publishing {
         multipleVariants {
             allVariants()
@@ -96,34 +94,10 @@ android {
 }
 
 dependencies {
-    api project(":appwidget-host")
-
     implementation platform(libs.androidx.compose.bom)
-    implementation libs.glance.appwidget
-    implementation libs.compose.foundation.foundation
     implementation libs.compose.ui.ui
-    implementation libs.compose.material.material3
 
-    // ======================
-    // Test dependencies
-    // ======================
-
-    androidTestUtil libs.androidx.test.orchestrator
-
-    androidTestImplementation libs.junit
-    androidTestImplementation libs.truth
-    androidTestImplementation libs.compose.ui.test.junit4
-    androidTestImplementation libs.compose.ui.test.manifest
-    androidTestImplementation libs.androidx.test.core
-    androidTestImplementation libs.androidx.test.runner
-    androidTestImplementation libs.androidx.test.rules
-    androidTestImplementation libs.androidx.test.uiAutomator
+    implementation libs.glance.appwidget
 }
 
 apply plugin: "com.vanniktech.maven.publish"
-apply plugin: "me.tylerbwong.gradle.metalava"
-
-metalava {
-    filename = "api/current.api"
-    reportLintsAsErrors = true
-}
