@@ -48,6 +48,9 @@ class SampleGlanceScreenshotTest {
     fun sampleGlanceContent() {
         renderComposable()
 
+        // NOTE: The device and screenshot framework you use should support hardware acceleration
+        // and `clipToOutline` to see rounded corners. For robolectric, see this
+        //[issue](https://github.com/robolectric/robolectric/issues/8081#issuecomment-1478137890).
         captureAndVerifyScreenshot("sample_content")
     }
 

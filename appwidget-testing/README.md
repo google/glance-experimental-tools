@@ -47,6 +47,10 @@ Then, using screenshot testing tool of your choice capture and compare the scree
 activity. For example, following sample uses [Roborazzi](https://github.com/takahirom/roborazzi)
 capture and verify the screenshot.
 
+NOTE: The device and screenshot framework you use should support hardware acceleration and
+`clipToOutline` to see rounded corners. For robolectric, see this
+[issue](https://github.com/robolectric/robolectric/issues/8081#issuecomment-1478137890)
+
 ```kotlin
 Espresso.onView(ViewMatchers.isRoot())
     .captureRoboImage(
