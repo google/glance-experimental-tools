@@ -48,6 +48,11 @@ class SampleGlanceScreenshotTest {
     fun sampleGlanceContent() {
         renderComposable()
 
+        // NOTE: The rendering and screenshot framework you use should support hardware acceleration
+        // and `clipToOutline` to see rounded corners. For robolectric, see this
+        // [issue](https://github.com/robolectric/robolectric/issues/8081#issuecomment-1478137890).
+        // When using an emulator, you may use Espresso's `captureToBitmap` to ensure that the
+        // corner radius is captured.
         captureAndVerifyScreenshot("sample_content")
     }
 

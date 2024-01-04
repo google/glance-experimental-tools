@@ -41,6 +41,12 @@ import kotlinx.coroutines.runBlocking
  * screenshot tests.
  *
  * See README.md for usage.
+ *
+ * NOTE: The device and screenshot framework you use should support hardware acceleration and
+ * `clipToOutline` to see rounded corners. For robolectric, see
+ * https://github.com/robolectric/robolectric/issues/8081#issuecomment-1478137890.
+ * When using an emulator, you may use Espresso's `captureToBitmap` to ensure that the corner radius
+ * is captured.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 public class GlanceScreenshotTestActivity : Activity() {
