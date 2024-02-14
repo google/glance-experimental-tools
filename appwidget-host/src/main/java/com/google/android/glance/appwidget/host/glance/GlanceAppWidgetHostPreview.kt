@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpSize
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.compose
 import com.google.android.glance.appwidget.host.AppWidgetHost
 import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
 import kotlinx.coroutines.launch
@@ -57,7 +58,9 @@ fun GlanceAppWidgetHostPreview(
     val context = LocalContext.current
 
     suspend fun updateContent() {
-        hostState.updateAppWidget(glanceAppWidget.compose(context, displaySize, state, provider))
+        hostState.updateAppWidget(
+            glanceAppWidget.compose(context = context, size = displaySize, state = state)
+        )
     }
 
     if (hostState.isReady) {

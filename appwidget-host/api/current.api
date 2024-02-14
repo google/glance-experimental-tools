@@ -49,9 +49,6 @@ package com.google.android.glance.appwidget.host.glance {
     method @androidx.compose.runtime.Composable @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public static void GlanceAppWidgetHostPreview(androidx.glance.appwidget.GlanceAppWidget glanceAppWidget, optional androidx.compose.ui.Modifier modifier, optional Object? state, optional long displaySize, optional android.appwidget.AppWidgetProviderInfo? provider);
   }
 
-  public final class GlanceRemoteViewsKtxKt {
-    method @androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi public static suspend Object? compose(androidx.glance.appwidget.GlanceAppWidget, android.content.Context context, long size, optional Object? state, optional android.appwidget.AppWidgetProviderInfo? info, optional kotlin.coroutines.Continuation<? super android.widget.RemoteViews>);
-  }
 
 }
 

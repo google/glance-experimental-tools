@@ -56,11 +56,11 @@ import androidx.glance.GlanceId
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.compose
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.GlanceStateDefinition
 import com.google.android.glance.appwidget.host.AppWidgetHost
-import com.google.android.glance.appwidget.host.glance.compose
 import com.google.android.glance.appwidget.host.rememberAppWidgetHostState
 
 /**
@@ -281,7 +281,6 @@ fun AppWidgetConfigurationScaffold(
                     context = context,
                     size = widgetSize,
                     state = currentState,
-                    info = appWidgetConfigurationState.providerInfo!!
                 )
             )
         }

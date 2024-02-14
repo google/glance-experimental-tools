@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.compose
 import com.google.android.glance.appwidget.host.getTargetSize
-import com.google.android.glance.appwidget.host.glance.compose
 import com.google.android.glance.tools.viewer.ui.ViewerScreen
 import com.google.android.glance.tools.viewer.ui.theme.ViewerTheme
 import kotlinx.coroutines.Dispatchers
@@ -137,6 +137,6 @@ abstract class GlanceViewerActivity : AppWidgetViewerActivity() {
 
         val receiverClass = receiver as Class<out GlanceAppWidgetReceiver>
         val snapshot = getGlanceSnapshot(receiverClass)
-        snapshot.instance.compose(applicationContext, size, snapshot.state, info)
+        snapshot.instance.compose(applicationContext, size = size, state = snapshot.state)
     }
 }
