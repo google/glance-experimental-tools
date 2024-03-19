@@ -19,6 +19,7 @@ package com.google.android.glance.appwidget.configuration
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -75,7 +77,8 @@ class AppWidgetConfigurationState(
     val glanceId: GlanceId?,
     val providerInfo: AppWidgetProviderInfo?,
     val instance: GlanceAppWidget,
-    private val activity: Activity
+    private val activity: Activity,
+    private val intent: Intent,
 ) {
 
     @PublishedApi
@@ -119,9 +122,6 @@ class AppWidgetConfigurationState(
     suspend fun applyConfiguration() {
         checkNotNull(glanceId) { "Cannot apply configuration in a null GlanceId" }
 
-        // Set result ok to tell the launcher the configuration was a success
-        activity.setResult(Activity.RESULT_OK, activity.intent)
-
         @Suppress("UNCHECKED_CAST")
         updateAppWidgetState(
             activity,
@@ -131,6 +131,9 @@ class AppWidgetConfigurationState(
             internalState
         }
         instance.update(activity, glanceId)
+
+        // Set result ok to tell the launcher the configuration was a success
+        activity.setResult(Activity.RESULT_OK, intent)
         activity.finish()
     }
 
@@ -144,7 +147,7 @@ class AppWidgetConfigurationState(
      * Note: this will be the same result as if users performs a back-press action.
      */
     fun discardConfiguration() {
-        activity.setResult(Activity.RESULT_CANCELED)
+        activity.setResult(Activity.RESULT_CANCELED, intent)
         activity.finish()
     }
 }
@@ -160,17 +163,27 @@ class AppWidgetConfigurationState(
  */
 @Composable
 fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget): AppWidgetConfigurationState {
-    val activity = (LocalContext.current as Activity).apply {
-        // Set the result to canceled in case the configuration does not finish
-        setResult(Activity.RESULT_CANCELED)
-    }
+    val activity = (LocalContext.current as Activity)
     val glanceAppWidgetManager = GlanceAppWidgetManager(activity)
+
     val glanceId = remember(activity) {
         glanceAppWidgetManager.getGlanceIdBy(activity.intent)
     }
+
+    val appWidgetId by remember(glanceId) {
+        derivedStateOf {
+            glanceId?.let { glanceAppWidgetManager.getAppWidgetId(it) }
+                ?: AppWidgetManager.INVALID_APPWIDGET_ID
+        }
+    }
+
+    val resultIntent = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+
+    // Set the result to canceled in case the configuration does not finish
+    activity.setResult(Activity.RESULT_CANCELED, resultIntent)
+
     val providerInfo: AppWidgetProviderInfo? = remember(glanceId) {
         if (glanceId != null) {
-            val appWidgetId = glanceAppWidgetManager.getAppWidgetId(glanceId)
             AppWidgetManager.getInstance(activity).getAppWidgetInfo(appWidgetId)
         } else {
             null
@@ -181,8 +194,10 @@ fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget):
         glanceId = glanceId,
         providerInfo = providerInfo,
         instance = configurationInstance,
-        activity = activity
+        activity = activity,
+        intent = resultIntent
     )
+
     return produceState(initialValue = initialValue, configurationInstance) {
         if (glanceId == null) return@produceState
         value = AppWidgetConfigurationState(
@@ -194,7 +209,8 @@ fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget):
             glanceId = glanceId,
             providerInfo = providerInfo,
             instance = configurationInstance,
-            activity = activity
+            activity = activity,
+            intent = resultIntent
         )
     }.value
 }
@@ -264,6 +280,7 @@ fun AppWidgetConfigurationScaffold(
                     val portraitSize = sizes.first()
                     portraitSize.copy(width = portraitSize.height, height = portraitSize.width)
                 }
+
                 else -> throw IllegalArgumentException("Unknown orientation value")
             }
         }
