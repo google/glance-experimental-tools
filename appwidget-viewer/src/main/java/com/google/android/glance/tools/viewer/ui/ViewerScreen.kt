@@ -28,19 +28,18 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -74,7 +73,7 @@ import com.google.android.glance.appwidget.host.requestPin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun ViewerScreen(
     providers: List<AppWidgetProviderInfo>,
@@ -130,6 +129,7 @@ internal fun ViewerScreen(
                     currentSize = currentSize,
                     onSizeChange = onResize
                 )
+
                 ViewerPanel.Info -> ViewerInfoPanel(selectedProvider)
             }
         }
@@ -230,7 +230,6 @@ private suspend fun doExport(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ViewerBottomBar(
     drawerState: DrawerState,
@@ -318,7 +317,6 @@ private fun ViewerBottomBar(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun ViewerDrawer(
     providers: List<AppWidgetProviderInfo>,
     selectedProvider: AppWidgetProviderInfo,
@@ -339,7 +337,7 @@ private fun ViewerDrawer(
                         imageVector = if (selectedProvider == item) {
                             Icons.Rounded.Done
                         } else {
-                            Icons.Rounded.KeyboardArrowRight
+                            Icons.AutoMirrored.Rounded.KeyboardArrowRight
                         },
                         contentDescription = null
                     )
