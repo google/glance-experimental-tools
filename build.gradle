@@ -42,6 +42,7 @@ buildscript {
 
 plugins {
     id "com.diffplug.spotless" version "5.9.0"
+    alias(libs.plugins.compose.compiler) apply false
 }
 
 

@@ -37,7 +37,7 @@ import org.robolectric.annotation.GraphicsMode
 
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(sdk = [33], qualifiers = RobolectricDeviceQualifiers.Pixel6)
+@Config(sdk = [35], qualifiers = RobolectricDeviceQualifiers.Pixel6)
 class SampleGlanceScreenshotTest {
 
     @get:Rule

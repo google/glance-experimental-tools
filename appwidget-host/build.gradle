@@ -18,6 +18,8 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'org.jetbrains.dokka'
+    alias(libs.plugins.compose.compiler)
+
 }
 
 kotlin {
@@ -25,11 +27,11 @@ kotlin {
 
 android {
     namespace 'com.google.android.glance.appwidget.host'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         minSdk 21
-        targetSdk 34
+        targetSdk 35
 
         consumerProguardFiles "consumer-rules.pro"
 
@@ -61,9 +63,7 @@ android {
         buildConfig false
         compose true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
-    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true

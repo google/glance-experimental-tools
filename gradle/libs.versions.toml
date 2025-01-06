@@ -1,28 +1,28 @@
 [versions]
 composeCompiler = "1.5.3"
 composesnapshot = "-" # a single character = no snapshot
-androidx-compose-bom = "2023.10.00"
+androidx-compose-bom = "2024.12.01"
 
-glance = "1.1.0-SNAPSHOT"
-glancesnapshot = "11101881" # a single character = no snapshot
+glance = "1.1.1"
+glancesnapshot = "12873994" # a single character = no snapshot
 
 # gradlePlugin and lint need to be updated together
-gradlePlugin = "8.1.3"
-lintMinCompose = "31.1.2"
+gradlePlugin = "8.7.3"
+lintMinCompose = "31.7.3"
 
 ktlint = "0.42.1"
-kotlin = "1.9.10"
-coroutines = "1.7.1"
+kotlin = "2.1.0"
+coroutines = "1.9.0"
 
-androidxtest-core = "1.5.0"
-androidxtest-rules = "1.5.0"
-androidxtest-orchestrator = "1.4.2"
-androidxtest-runner = "1.5.2"
+androidxtest-core = "1.6.1"
+androidxtest-rules = "1.6.1"
+androidxtest-orchestrator = "1.5.1"
+androidxtest-runner = "1.6.2"
 
-androidx-test-ext-junit = "1.1.5"
+androidx-test-ext-junit = "1.2.1"
 
-robolectric = "4.10.3"
-roborazzi = "1.5.0"
+robolectric = "4.14.1"
+roborazzi = "1.26.0"
 
 [libraries]
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
@@ -41,7 +41,7 @@ compose-material-material3 = { module = "androidx.compose.material3:material3" }
 
 glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 
-google-material = "com.google.android.material:material:1.10.0"
+google-material = "com.google.android.material:material:1.12.0"
 
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "gradlePlugin" }
 gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.25.3"
@@ -51,6 +51,7 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "
 kotlin-stdlibJdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+
 kotlin-metadataJvm = "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.3.0"
 
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
@@ -58,19 +59,19 @@ kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-te
 
 dokka = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.10"
 
-androidx-core = "androidx.core:core-ktx:1.12.0"
-androidx-core-remoteviews = "androidx.core:core-remoteviews:1.0.0"
-androidx-activity-compose = "androidx.activity:activity-compose:1.8.0"
+androidx-core = "androidx.core:core-ktx:1.15.0"
+androidx-core-remoteviews = "androidx.core:core-remoteviews:1.1.0"
+androidx-activity-compose = "androidx.activity:activity-compose:1.9.3"
 
 androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidxtest-core" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxtest-runner" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxtest-rules" }
 androidx-test-orchestrator = { module = "androidx.test:orchestrator", version.ref = "androidxtest-orchestrator" }
-androidx-test-uiAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
+androidx-test-uiAutomator = "androidx.test.uiautomator:uiautomator:2.3.0"
 
 # alpha for robolectric x compose fix
-androidx-test-espressoCore = "androidx.test.espresso:espresso-core:3.5.1"
-androidx-test-espressoWeb = "androidx.test.espresso:espresso-web:3.5.1"
+androidx-test-espressoCore = "androidx.test.espresso:espresso-core:3.6.1"
+androidx-test-espressoWeb = "androidx.test.espresso:espresso-web:3.6.1"
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 
 junit = "junit:junit:4.13.2"
@@ -87,3 +88,6 @@ android-tools-lint-api = { module = "com.android.tools.lint:lint-api", version.r
 android-tools-lint-tests = { module = "com.android.tools.lint:lint-tests", version.ref = "lintMinCompose" }
 [plugins]
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi"}
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
