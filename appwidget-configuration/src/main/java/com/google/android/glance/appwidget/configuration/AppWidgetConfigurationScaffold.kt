@@ -34,10 +34,10 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -205,7 +205,7 @@ fun rememberAppWidgetConfigurationState(configurationInstance: GlanceAppWidget):
  *
  * @param appWidgetConfigurationState the [AppWidgetConfigurationState] used to display the preview
  * @param modifier the [Modifier] to be applied to this scaffold
- * @param topBar top app bar of the screen, typically a [SmallTopAppBar]
+ * @param topBar top app bar of the screen, typically a [TopAppBar]
  * @param bottomBar bottom bar of the screen, typically a [NavigationBar]
  * @param snackbarHost component to host [Snackbar]s that are pushed to be shown via
  * [SnackbarHostState.showSnackbar], typically a [SnackbarHost]
